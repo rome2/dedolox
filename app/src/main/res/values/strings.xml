@@ -4,5 +4,14 @@
     <string name="app_name">Dedolox</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="volumeLabel">MAIN VOL</string>
+    <string name="ampEnvA">AMP A</string>
+    <string name="ampEnvH">AMP H</string>
+    <string name="ampEnvD">AMP D</string>
+    <string name="ampEnvS">AMP S</string>
+    <string name="ampEnvR">AMP R</string>
+    <string name="lfo1Speed">LFO 1</string>
+    <string name="filterFrequency">FREQ</string>
+    <string name="filterResonance">RES</string>
 
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PotView">
+        <attr name="potMovie" format="reference" />
+        <attr name="imageCount" format="integer" />
+    </declare-styleable>
+</resources>

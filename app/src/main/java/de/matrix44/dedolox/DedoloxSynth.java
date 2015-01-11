@@ -60,6 +60,8 @@ public class DedoloxSynth {
     lfo1.setSampleRate(sampleRate);
     lfo2.setSampleRate(sampleRate);
     filter.setSampleRate(sampleRate);
+    oscillator1.setSampleRate(sampleRate);
+    oscillator2.setSampleRate(sampleRate);
   }
 
   /**
@@ -86,18 +88,10 @@ public class DedoloxSynth {
     // Save buffer size:
     this.bufferSize = bufferSize;
 
-    // Update static caches for LFOs and envelopes:
-    ampEnvelopeBuffer = new double[bufferSize];
-    lfo1Buffer = new double[bufferSize];
-    lfo2Buffer = new double[bufferSize];
+    // Update static caches...
 
     // Update buffer size dependent synth elements...
   }
-
-  double fr1 = 440.f;
-  double fr2 = 880.f;
-  double ph1 = 0.0;
-  double ph2 = 0.0;
 
   /**
    * The actual audio processing function.
@@ -116,33 +110,46 @@ public class DedoloxSynth {
     // Update input data:
     handleMIDIEvents(events, eventCount);
 
-    // Update static buffers for LFOs and envelopes:
-    for (int i = 0; i < sampleFrames; i++) {
-      ampEnvelopeBuffer[i] = ampEnvelope.tick();
-      lfo1Buffer[i] = lfo1.tick();
-      lfo2Buffer[i] = lfo2.tick();
-    }
+    double freq = noteToFrequency[currentNote];
+    oscillator1.setFrequency(freq);
+    oscillator2.setFrequency(freq * 1.75);
 
-    fr1 = noteToFrequency[currentNote];
-    fr2 = fr1 * 2.0;
-    double tau = Math.PI * 2.0;
-    double d1 = tau * fr1 / sampleRate;
-    double d2 = tau * fr2 / sampleRate;
     for (int i = 0; i < sampleFrames; i++) {
-      double envVal = ampEnvelopeBuffer[i] * currentVelocity;
-      envVal *= (lfo1Buffer[i] + 1.0) * 0.5;
-      left[i]  = Math.sin(ph1) * envVal + Math.sin(ph2) * envVal;
-      left[i] = filter.tick(left[i]);
+
+      // Get envelope and LFO values:
+      double ampEnvelopeValue = ampEnvelope.tick();
+      double lfo1Value = lfo1.tick();
+      double lfo2Value = lfo2.tick();
+
+      double envVal = ampEnvelopeValue * currentVelocity;
+
+      //envVal *= (lfo1Buffer[i] + 1.0) * 0.5;
+
+      // Evaluate oscillators:
+      double osc1Val  = oscillator1.tick();
+      double osc2Val  = oscillator2.tick();
+      double noiseVal = 2.0 * Math.random() - 1.0;
+      double ringVal  = osc1Val * osc2Val * 2.0;
+
+      // Clip ring modulated values:
+      ringVal = ringVal - (ringVal * ringVal * ringVal) / 6.0;
+
+      // Mix oscillators:
+      double oscVal = (osc1Val * osc1Volume.tick()) + (ringVal  * ringmodVolume.tick()) +
+                      (osc2Val * osc2Volume.tick()) + (noiseVal * noiseVolume.tick());
+
+      // Apply amp envelope:
+      oscVal *= envVal;
+
+      // Apply filter:
+      oscVal = filter.tick(oscVal);
+
+      // Apply master volume:
+      oscVal *= masterVolume.tick();
+
+      // Write out:
+      left[i] =  oscVal;
       right[i] = left[i];
-      ph1 += d1;
-      ph2 += d2;
-    }
-
-    // Apply master volume:
-    for (int i = 0; i < sampleFrames; i++) {
-      double vol = masterVolume.tick();
-      left[i]  *= vol;
-      right[i] *= vol;
     }
   }
 
@@ -285,23 +292,33 @@ public class DedoloxSynth {
   /** The amplifier envelope. */
   private final AHDSREnvelope ampEnvelope = new AHDSREnvelope();
 
-  /** Cache for the amplifier envelope values. */
-  private double[] ampEnvelopeBuffer = null;
-
   /** First LFO. */
   private final LFO lfo1 = new LFO();
-
-  /** Cache for the LFO 1 values. */
-  private double[] lfo1Buffer = null;
 
   /** Second LFO. */
   private final LFO lfo2 = new LFO();
 
-  /** Cache for the LFO 2 values. */
-  private double[] lfo2Buffer = null;
-
   /** Master volume of this synth. */
   private final SmoothParameter masterVolume = new SmoothParameter(0.75);
 
+  /** Mixer, oscillator 1 volume. */
+  private final SmoothParameter osc1Volume = new SmoothParameter(1.0);
+
+  /** Mixer, oscillator 2 volume. */
+  private final SmoothParameter osc2Volume = new SmoothParameter(1.0);
+
+  /** Mixer, noise oscillator volume. */
+  private final SmoothParameter noiseVolume = new SmoothParameter(0.0);
+
+  /** Mixer, ring modulated volume. */
+  private final SmoothParameter ringmodVolume = new SmoothParameter(0.0);
+
+  /** The filter used in this synth. */
   private final MoogFilter filter = new MoogFilter();
+
+  /** First main oscillator. */
+  private final MainOscillator oscillator1 = new MainOscillator();
+
+  /** Second main oscillator. */
+  private final MainOscillator oscillator2 = new MainOscillator();
 }

@@ -19,20 +19,26 @@ package de.matrix44.dedolox;
  */
 public class Tweak {
 
-  /** Minimum times for the envelopes in seconds. */
+  /** Min times for the envelopes in seconds. */
   public static final double AHDSR_MIN_TIME = 0.00125;
 
-  /** Maximum times for the envelopes in seconds. */
+  /** Max times for the envelopes in seconds. */
   public static final double AHDSR_MAX_TIME = 2.0;
 
-  /** Level epsilon used for termination of the envelope. */
+  /** Level epsilon, used for termination of the envelope. */
   public static final double AHDSR_ENV_THRESHOLD = 0.0005;
 
-  /** Minimal LFO speed in hertz: */
+  /** Min LFO speed in hertz: */
   public static final double LFO_MIN_SPEED = 0.5;
 
-  /** Maximal LFO speed in hertz: */
+  /** Max LFO speed in hertz: */
   public static final double LFO_MAX_SPEED = 25.0;
+
+  /** Min oscillator speed in hertz: */
+  public static final double OSC_MIN_SPEED = 0.5;
+
+  /** Max oscillator speed in hertz: */
+  public static final double OSC_MAX_SPEED = 14000.0;
 
   /** Min filter frequency in hertz: */
   public static final double FILTER_MIN_FREQ = 10.0;
