@@ -31,6 +31,7 @@ public class PotView extends View {
 
   @Override
   public void onDraw(Canvas canvas) {
+
     if (potMovie != null) {
 
       int imageNo = (int)(((imageCountX * imageCountY) - 1) * value);
@@ -51,12 +52,6 @@ public class PotView extends View {
       canvas.drawBitmap(potMovie, srcRect, clientRect, moviePaint);
     }
   }
-
-  private boolean circularMode = false;
-  private boolean absoluteMode = false;
-  private double startVal = 0.0;
-  private double startY;
-  private int linearSize = 128;
 
   @Override
   public boolean onTouchEvent(MotionEvent event) {
@@ -122,6 +117,7 @@ public class PotView extends View {
   }
 
   public void setValue(double val) {
+
     if (val < 0.0)
       value = 0.0;
     else if (val > 1.0)
@@ -136,14 +132,15 @@ public class PotView extends View {
   }
 
   private void init(Context context) {
+
     imageCountX = 16;
     imageCountY = 8;
     potMovie    = BitmapFactory.decodeResource(this.getResources(), R.drawable.knob_movie);
     linearSize  = (int)((float)linearSize * context.getResources().getDisplayMetrics().density);
   }
 
-  private double valueFromMousePos(float mx, float my)
-  {
+  private double valueFromMousePos(float mx, float my) {
+
     // Get coordinates with respect to the control center:
     double x = (getWidth()  / 2.0) - mx;
     double y = (getHeight() / 2.0) - my;
@@ -170,6 +167,11 @@ public class PotView extends View {
     return value;
   }
 
+  private boolean circularMode = false;
+  private boolean absoluteMode = false;
+  private double startVal = 0.0;
+  private double startY;
+  private int linearSize = 128;
   private int imageCountX = 0;
   private int imageCountY = 0;
   private Bitmap potMovie = null;

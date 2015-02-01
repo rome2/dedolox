@@ -73,4 +73,14 @@ public final class MIDIImplementation {
    *  4: Sample and hold
    *  */
   public static final int CC_LFO2_WAVEFORM = 80;
+
+  /**
+   *  OSC 1 wave form.
+   *
+   *  0: Sine
+   *  1: Triangle
+   *  2: Rectangle
+   *  3: Saw
+   *  */
+  public static final int CC_OSC1_WAVEFORM = 81;
 }

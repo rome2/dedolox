@@ -18,11 +18,25 @@
             android:layout_height="fill_parent">
 
             <view
-                android:layout_width="1000dp"
-                android:layout_height="fill_parent"
-                class="de.matrix44.dedolox.SynthPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="de.matrix44.dedolox.WoodPanel"
+                android:id="@+id/view"
+                android:layout_gravity="center_vertical"/>
+
+            <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="de.matrix44.dedolox.Osc1Panel"
                 android:id="@+id/view2"
-                />
+                android:layout_gravity="center_vertical"/>
+
+            <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="de.matrix44.dedolox.WoodPanel"
+                android:id="@+id/view3"
+                android:layout_gravity="center_vertical"/>
 
             <ScrollView
                 android:layout_width="fill_parent"
@@ -351,6 +365,7 @@
 
                 </GridLayout>
             </ScrollView>
+
         </LinearLayout>
     </HorizontalScrollView>
 

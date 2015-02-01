@@ -112,7 +112,7 @@ public class DedoloxSynth {
 
     double freq = noteToFrequency[currentNote];
     oscillator1.setFrequency(freq);
-    oscillator2.setFrequency(freq * 1.75);
+    oscillator2.setFrequency(freq);
 
     for (int i = 0; i < sampleFrames; i++) {
 
@@ -267,6 +267,17 @@ public class DedoloxSynth {
               lfo2.setWaveForm(LFO.WaveForm.RANDOM);
             break;
 
+          case MIDIImplementation.CC_OSC1_WAVEFORM:
+            if (events[i].value2 == 0)
+              oscillator1.setWaveForm(MainOscillator.WaveForm.SINE);
+            else if (events[i].value2 == 1)
+              oscillator1.setWaveForm(MainOscillator.WaveForm.TRIANGLE);
+            else if (events[i].value2 == 2)
+              oscillator1.setWaveForm(MainOscillator.WaveForm.RECT);
+            else if (events[i].value2 == 3)
+              oscillator1.setWaveForm(MainOscillator.WaveForm.SAW);
+            break;
+
           default:
             break;
         }
@@ -305,7 +316,7 @@ public class DedoloxSynth {
   private final SmoothParameter osc1Volume = new SmoothParameter(1.0);
 
   /** Mixer, oscillator 2 volume. */
-  private final SmoothParameter osc2Volume = new SmoothParameter(1.0);
+  private final SmoothParameter osc2Volume = new SmoothParameter(0.0);
 
   /** Mixer, noise oscillator volume. */
   private final SmoothParameter noiseVolume = new SmoothParameter(0.0);

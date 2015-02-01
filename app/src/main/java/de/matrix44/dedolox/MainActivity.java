@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 
 public class MainActivity extends ActionBarActivity {
 
-  MainAudioThread audioThread = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +22,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 60, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 60, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 60, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 60, 127);
         return false;
       }
     });
@@ -35,9 +34,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 61, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 61, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 61, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 61, 127);
         return false;
       }
     });
@@ -47,9 +46,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 62, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 62, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 62, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 62, 127);
         return false;
       }
     });
@@ -59,9 +58,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 63, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 63, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 63, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 63, 127);
         return false;
       }
     });
@@ -71,9 +70,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 64, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 64, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 64, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 64, 127);
         return false;
       }
     });
@@ -83,9 +82,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 65, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 65, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 65, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 65, 127);
         return false;
       }
     });
@@ -95,9 +94,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 66, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 66, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 66, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 66, 127);
         return false;
       }
     });
@@ -107,9 +106,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 67, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 67, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 67, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 67, 127);
         return false;
       }
     });
@@ -119,9 +118,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 68, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 68, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 68, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 68, 127);
         return false;
       }
     });
@@ -131,9 +130,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 69, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 69, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 69, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 69, 127);
         return false;
       }
     });
@@ -143,9 +142,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 70, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 70, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 70, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 70, 127);
         return false;
       }
     });
@@ -155,9 +154,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 71, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 71, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 71, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 71, 127);
         return false;
       }
     });
@@ -167,9 +166,9 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
-          audioThread.noteOn(0, 72, 127);
+          MainAudioThread.getAudioThread().noteOn(0, 72, 127);
         else if (event.getAction() == MotionEvent.ACTION_UP)
-          audioThread.noteOff(0, 72, 127);
+          MainAudioThread.getAudioThread().noteOff(0, 72, 127);
         return false;
       }
     });
@@ -179,7 +178,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_MASTER_VOL, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_MASTER_VOL, progress);
       }
 
       @Override
@@ -193,7 +192,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_AMPENV_ATTACK, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_ATTACK, progress);
       }
 
       @Override
@@ -207,7 +206,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_AMPENV_HOLD, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_HOLD, progress);
       }
 
       @Override
@@ -221,7 +220,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_AMPENV_DECAY, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_DECAY, progress);
       }
 
       @Override
@@ -235,7 +234,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_AMPENV_SUSTAIN, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_SUSTAIN, progress);
       }
 
       @Override
@@ -249,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_AMPENV_RELEASE, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_RELEASE, progress);
       }
 
       @Override
@@ -263,7 +262,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_LFO1_SPEED, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO1_SPEED, progress);
       }
 
       @Override
@@ -277,7 +276,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_FILTER_FREQ, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_FREQ, progress);
       }
 
       @Override
@@ -291,7 +290,7 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // Perform action on click
-        audioThread.controlChange(0, MIDIImplementation.CC_FILTER_RESONANCE, progress);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_RESONANCE, progress);
       }
 
       @Override
@@ -300,9 +299,8 @@ public class MainActivity extends ActionBarActivity {
       public void onStopTrackingTouch(SeekBar seekBar) { }
     });
 
-    // start a new thread to synthesise audio
-    audioThread = new MainAudioThread();
-    audioThread.start();
+    // Start to synthesise audio:
+    MainAudioThread.getAudioThread().start();
   }
 
 
@@ -311,12 +309,11 @@ public class MainActivity extends ActionBarActivity {
     super.onDestroy();
 
     try {
-      audioThread.stopAudio();
-      audioThread.join();
+      MainAudioThread.getAudioThread().stopAudio();
+      MainAudioThread.getAudioThread().join();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    audioThread = null;
   }
 
   @Override

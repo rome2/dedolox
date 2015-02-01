@@ -16,22 +16,34 @@ public class SynthPanel extends FrameLayout {
 
   public SynthPanel(Context context) {
     super(context);
-    init(context);
+    init(context, 0);
+  }
+
+  public SynthPanel(Context context, int backpicID) {
+    super(context);
+    init(context, backpicID);
   }
 
   public SynthPanel(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init(context);
+    init(context, 0);
+  }
+
+  public SynthPanel(Context context, AttributeSet attrs, int backpicID) {
+    super(context, attrs);
+    init(context, backpicID);
   }
 
   @Override
   public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int width  = MeasureSpec.getSize(widthMeasureSpec);
     int height = MeasureSpec.getSize(heightMeasureSpec);
+    int width = MeasureSpec.getSize(widthMeasureSpec);
 
     if (backPic != null) {
       double aspect = (double)backPic.getWidth() / backPic.getHeight();
       width = (int)(aspect * height);
+      widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     setMeasuredDimension(width, height);
@@ -56,9 +68,10 @@ public class SynthPanel extends FrameLayout {
       super.draw(canvas);
   }
 
-  private void init(Context context) {
+  protected void init(Context context, int backpicID) {
     this.setWillNotDraw(false);
-    backPic = BitmapFactory.decodeResource(this.getResources(), R.drawable.osc1panel);
+    if (backpicID != 0)
+      backPic = BitmapFactory.decodeResource(this.getResources(), backpicID);
   }
 
   private Bitmap backPic = null;

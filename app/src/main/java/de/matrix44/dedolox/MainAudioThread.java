@@ -250,6 +250,12 @@ class MainAudioThread extends Thread {
     isRunning = false;
   }
 
+  public static MainAudioThread getAudioThread() {
+    if (audioThread == null)
+      audioThread = new MainAudioThread();
+    return audioThread;
+  }
+
   /**
    * Add a new MIDI message to the input queue.
    *
@@ -322,4 +328,7 @@ class MainAudioThread extends Thread {
 
   /** Thread synchronization object for the MIDI event input buffer. */
   private final Object inputBufferLock = new Object();
+
+  /** The one and only audio thread. */
+  private static MainAudioThread audioThread = null;
 }
