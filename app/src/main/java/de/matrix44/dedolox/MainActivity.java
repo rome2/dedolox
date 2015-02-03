@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 
 public class MainActivity extends ActionBarActivity {
@@ -298,6 +300,11 @@ public class MainActivity extends ActionBarActivity {
       @Override
       public void onStopTrackingTouch(SeekBar seekBar) { }
     });
+
+    HorizontalScrollView scrollView = (HorizontalScrollView)findViewById(R.id.horizontalScrollView);
+    ((Osc1Panel)findViewById(R.id.osc1panel)).setScrollView(scrollView);
+    ((Osc2Panel)findViewById(R.id.osc2panel)).setScrollView(scrollView);
+    ((MixerPanel)findViewById(R.id.mixerpanel)).setScrollView(scrollView);
 
     // Start to synthesise audio:
     MainAudioThread.getAudioThread().start();

@@ -110,9 +110,22 @@ public class DedoloxSynth {
     // Update input data:
     handleMIDIEvents(events, eventCount);
 
-    double freq = noteToFrequency[currentNote];
-    oscillator1.setFrequency(freq);
-    oscillator2.setFrequency(freq);
+    int note1 = currentNote + osc1coarse;
+    if (note1 < 0)
+      note1 = 0;
+    else if (note1 > 127)
+      note1 = 127;
+    double freq1 = noteToFrequency[note1];
+
+    int note2 = currentNote + osc2coarse;
+    if (note2 < 0)
+      note2 = 0;
+    else if (note2 > 127)
+      note2 = 127;
+    double freq2 = noteToFrequency[note2];
+
+    oscillator1.setFrequency(freq1);
+    oscillator2.setFrequency(freq2);
 
     for (int i = 0; i < sampleFrames; i++) {
 
@@ -278,6 +291,57 @@ public class DedoloxSynth {
               oscillator1.setWaveForm(MainOscillator.WaveForm.SAW);
             break;
 
+          case MIDIImplementation.CC_OSC1_COARSE:
+            osc1coarse = events[i].value2 - 64;
+            break;
+
+          case MIDIImplementation.CC_OSC1_FINE:
+            osc1fine = (double)(events[i].value2 - 64) / 128.0;
+            break;
+
+          case MIDIImplementation.CC_OSC1_PULSE:
+            oscillator1.setPulseWidth(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_OSC1_LEVEL:
+            osc1Volume.setValue(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_OSC2_WAVEFORM:
+            if (events[i].value2 == 0)
+              oscillator2.setWaveForm(MainOscillator.WaveForm.SINE);
+            else if (events[i].value2 == 1)
+              oscillator2.setWaveForm(MainOscillator.WaveForm.TRIANGLE);
+            else if (events[i].value2 == 2)
+              oscillator2.setWaveForm(MainOscillator.WaveForm.RECT);
+            else if (events[i].value2 == 3)
+              oscillator2.setWaveForm(MainOscillator.WaveForm.SAW);
+            break;
+
+          case MIDIImplementation.CC_OSC2_COARSE:
+            osc2coarse = events[i].value2 - 64;
+            break;
+
+          case MIDIImplementation.CC_OSC2_FINE:
+            osc2fine = (double)(events[i].value2 - 64) / 128.0;
+            break;
+
+          case MIDIImplementation.CC_OSC2_PULSE:
+            oscillator2.setPulseWidth(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_OSC2_LEVEL:
+            osc2Volume.setValue(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_NOISE_LEVEL:
+            noiseVolume.setValue(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_RINGMOD_LEVEL:
+            ringmodVolume.setValue(nrmVal);
+            break;
+
           default:
             break;
         }
@@ -316,7 +380,7 @@ public class DedoloxSynth {
   private final SmoothParameter osc1Volume = new SmoothParameter(1.0);
 
   /** Mixer, oscillator 2 volume. */
-  private final SmoothParameter osc2Volume = new SmoothParameter(0.0);
+  private final SmoothParameter osc2Volume = new SmoothParameter(1.0);
 
   /** Mixer, noise oscillator volume. */
   private final SmoothParameter noiseVolume = new SmoothParameter(0.0);
@@ -329,6 +393,18 @@ public class DedoloxSynth {
 
   /** First main oscillator. */
   private final MainOscillator oscillator1 = new MainOscillator();
+
+  /** Oscillator 1 coarse tuning (+-12 semitones). */
+  private int osc1coarse = 0;
+
+  /** Oscillator 1 fine tuning (+-1 semitone). */
+  private double osc1fine = 0.0;
+
+  /** Oscillator 2 coarse tuning (+-12 semitones). */
+  private int osc2coarse = 0;
+
+  /** Oscillator 2 fine tuning (+-1 semitone). */
+  private double osc2fine = 0.0;
 
   /** Second main oscillator. */
   private final MainOscillator oscillator2 = new MainOscillator();

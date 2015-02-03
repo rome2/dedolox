@@ -9,3 +9,4 @@ app/build
 *.gitignore*
 *.blend1
 blender/output/*
+research

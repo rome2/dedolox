@@ -71,7 +71,7 @@ public class SynthPanel extends FrameLayout {
   protected void init(Context context, int backpicID) {
     this.setWillNotDraw(false);
     if (backpicID != 0)
-      backPic = BitmapFactory.decodeResource(this.getResources(), backpicID);
+      backPic = ResourceManager.getBitmap(context, backpicID);
   }
 
   private Bitmap backPic = null;

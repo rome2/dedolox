@@ -47,6 +47,7 @@ public class MainOscillator {
 
     // Update parameters:
     frequency.setSampleRate(newSampleRate);
+    pulseWidth.setSampleRate(newSampleRate);
   }
 
   /**
@@ -89,7 +90,7 @@ public class MainOscillator {
   }
 
   /**
-   * Retrieve the wave form of this oscillator.
+   * Set the wave form of this oscillator.
    *
    * @param newWaveForm The new wave form of this oscillator (see WaveForm enum).
    */
@@ -97,6 +98,34 @@ public class MainOscillator {
 
     // Update waveform:
     waveForm = newWaveForm;
+  }
+
+  /**
+   * Retrieve the pulse width of this oscillator.
+   *
+   * @return Returns the pulse width in percent.
+   */
+  public double getPulseWidth() {
+
+    // Return current pulse width:
+    return pulseWidth.getValue();
+  }
+
+  /**
+   * Set the pulse width of this oscillator.
+   *
+   * @param newWidth The new pulse width of this oscillator.
+   */
+  public void setPulseWidth(double newWidth) {
+
+    // Clip value:
+    if (newWidth < 0.0)
+      newWidth = 0.0;
+    else if (newWidth > 1.0)
+      newWidth = 1.0;
+
+    // Update width:
+    pulseWidth.setValue(newWidth);
   }
 
   /**
@@ -138,4 +167,7 @@ public class MainOscillator {
 
   /** Frequency of this oscillator. */
   private final SmoothParameter frequency = new SmoothParameter(Tweak.LFO_MIN_SPEED);
+
+  /** Pulse width of this oscillator. */
+  private final SmoothParameter pulseWidth = new SmoothParameter(1.0);
 }

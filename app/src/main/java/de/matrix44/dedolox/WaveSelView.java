@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
+
 import java.util.ArrayList;
 
 /**
@@ -22,12 +24,12 @@ public class WaveSelView extends View {
 
   public WaveSelView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init();
+    init(context);
   }
 
   public WaveSelView(Context context) {
     super(context);
-    init();
+    init(context);
   }
 
   @Override
@@ -57,25 +59,33 @@ public class WaveSelView extends View {
 
     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-      buttonDown = true;
+      if (event.getX() > (getWidth() / 2) && event.getY() > (getHeight() / 4) && event.getY() < ((3 * getHeight()) / 4))
+        buttonDown = true;
+
       invalidate();
+
+      if (buttonDown && scrollView != null)
+        scrollView.requestDisallowInterceptTouchEvent(true);
     }
 
     else if (event.getAction() == MotionEvent.ACTION_UP) {
 
-      buttonDown = false;
+      if (buttonDown) {
+        Rect clientRect = new Rect(getLeft(), getTop(), getRight(), getBottom());
+        if (clientRect.contains(getLeft() + (int) event.getX(), getTop() + (int) event.getY())) {
 
-      Rect clientRect = new Rect(getLeft(), getTop(), getRight(), getBottom());
-      if (clientRect.contains(getLeft() + (int) event.getX(), getTop() + (int) event.getY())) {
+          value++;
+          if (value >= (imageCount - 1))
+            value = 0;
 
+          fireWaveSelectionChanged();
+        }
 
-        value++;
-        if (value >= (imageCount - 1))
-          value = 0;
-
-        fireWaveSelectionChanged();
+        if (scrollView != null)
+          scrollView.requestDisallowInterceptTouchEvent(false);
       }
 
+      buttonDown = false;
       invalidate();
     }
 
@@ -109,10 +119,14 @@ public class WaveSelView extends View {
     this.listeners.add(listener);
   }
 
-  private void init() {
+  public void setScrollView(ViewParent target) {
+    scrollView = target;
+  }
+
+  private void init(Context context) {
 
     imageCount = 5;
-    buttonMovie = BitmapFactory.decodeResource(this.getResources(), R.drawable.wavesel);
+    buttonMovie = ResourceManager.getBitmap(context, R.drawable.wavesel);
   }
 
   private void fireWaveSelectionChanged() {
@@ -127,4 +141,5 @@ public class WaveSelView extends View {
   private Bitmap buttonMovie = null;
   private Paint moviePaint = new Paint(0);
   private int value = 0;
+  private ViewParent scrollView = null;
 }

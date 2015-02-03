@@ -2,6 +2,7 @@ package de.matrix44.dedolox;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 /**
@@ -19,9 +20,16 @@ public class Osc1Panel extends  SynthPanel {
     init(context);
   }
 
-  public void init(Context context) {
+  public void setScrollView(ViewParent target) {
+    waveSel.setScrollView(target);
+    coarsePot.setScrollView(target);
+    finePot.setScrollView(target);
+    pulsePot.setScrollView(target);
+  }
 
-    waveSel   = new WaveSelView(context);
+  private void init(Context context) {
+
+    waveSel = new WaveSelView(context);
     waveSel.setWaveSelectionListener(new WaveSelView.WaveSelectionListener() {
         @Override
         public void onWaveSelectionChanged(int newWave) {
@@ -32,11 +40,34 @@ public class Osc1Panel extends  SynthPanel {
     addView(waveSel, new FrameLayout.LayoutParams(100, 100));
 
     coarsePot = new PotView(context);
-    finePot   = new PotView(context);
-    pulsePot  = new PotView(context);
+    coarsePot.setControlSteps(25);
+    coarsePot.setPotListener(new PotView.PotListener() {
+        @Override
+        public void onValueChanged(double newVal) {
+          newVal = (newVal * 2.0) - 1.0;
+          int iVal = 64 + (int)Math.floor(newVal * 12.0);
+          MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_COARSE, iVal);
+        }
+      });
     addView(coarsePot, new FrameLayout.LayoutParams(100, 100));
-    addView(finePot,   new FrameLayout.LayoutParams(100, 100));
-    addView(pulsePot,  new FrameLayout.LayoutParams(100, 100));
+
+    finePot = new PotView(context);
+    finePot.setPotListener(new PotView.PotListener() {
+      @Override
+      public void onValueChanged(double newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_FINE, (int)(127.0 * newVal));
+      }
+    });
+    addView(finePot, new FrameLayout.LayoutParams(100, 100));
+
+    pulsePot = new PotView(context);
+    pulsePot.setPotListener(new PotView.PotListener() {
+      @Override
+      public void onValueChanged(double newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_PULSE, (int)(127.0 * newVal));
+      }
+    });
+    addView(pulsePot, new FrameLayout.LayoutParams(100, 100));
   }
 
   @Override

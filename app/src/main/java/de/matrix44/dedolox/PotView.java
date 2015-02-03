@@ -13,11 +13,18 @@ import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
+
+import java.util.ArrayList;
 
 /**
  * Created by rollo on 11.01.15.
  */
 public class PotView extends View {
+
+  public interface PotListener {
+    void onValueChanged(double newVal);
+  }
 
   public PotView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -34,7 +41,9 @@ public class PotView extends View {
 
     if (potMovie != null) {
 
-      int imageNo = (int)(((imageCountX * imageCountY) - 1) * value);
+      int csteps = controlSteps - 1;
+      double dval = ((double)((int)(value * csteps))) / csteps;
+      int imageNo = (int)(((imageCountX * imageCountY) - 1) * dval);
       int imgWidth  = potMovie.getWidth()  / imageCountX;
       int imgHeight = potMovie.getHeight() / imageCountY;
       int imageX = imageNo % imageCountX;
@@ -59,8 +68,8 @@ public class PotView extends View {
     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
       // Use circular mode?
-      if (circularMode)
-      {
+      if (circularMode) {
+
         // Get value from the mouse position point:
         startVal = valueFromMousePos(event.getX(), event.getY());
 
@@ -76,21 +85,30 @@ public class PotView extends View {
         startVal = value;
         startY   = event.getY();
       }
+
+      if (scrollView != null)
+        scrollView.requestDisallowInterceptTouchEvent(true);
+    }
+
+    else if (event.getAction() == MotionEvent.ACTION_UP) {
+
+      if (scrollView != null)
+        scrollView.requestDisallowInterceptTouchEvent(false);
     }
 
     else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
       // Running in circles?
-      if (circularMode)
-      {
+      if (circularMode) {
+
         // Get value from the mouse position point:
         double val = valueFromMousePos(event.getX(), event.getY());
 
         // Set value:
         if (absoluteMode)
           setValue(val);
-        else
-        {
+        else {
+
           // Set new value relative to the last value:
           setValue(value + (val - startVal));
 
@@ -100,8 +118,7 @@ public class PotView extends View {
       }
 
       // No, we're imitating a fader:
-      else
-      {
+      else {
         // Calc movement in pixels:
         double dy = startY - event.getY();
 
@@ -125,17 +142,32 @@ public class PotView extends View {
     else
       value = val;
     invalidate();
+    fireValueChanged();
   }
 
   public double getValue() {
     return value;
   }
 
+  public void setScrollView(ViewParent target) {
+    scrollView = target;
+  }
+
+  public void setControlSteps(int stepCount) {
+    controlSteps = stepCount;
+  }
+
+  public void setPotListener(PotListener listener) {
+
+    this.listeners.add(listener);
+  }
+
   private void init(Context context) {
 
     imageCountX = 16;
     imageCountY = 8;
-    potMovie    = BitmapFactory.decodeResource(this.getResources(), R.drawable.knob_movie);
+    controlSteps = imageCountX * imageCountY;
+    potMovie    = ResourceManager.getBitmap(context, R.drawable.knobmovie);
     linearSize  = (int)((float)linearSize * context.getResources().getDisplayMetrics().density);
   }
 
@@ -147,8 +179,7 @@ public class PotView extends View {
 
     // Normalize the values to get a direction vector:
     double len = Math.sqrt(x * x + y * y);
-    if (len > 0.0)
-    {
+    if (len > 0.0) {
       x /= len;
       y /= len;
 
@@ -167,6 +198,13 @@ public class PotView extends View {
     return value;
   }
 
+  private void fireValueChanged() {
+
+    for (PotListener listener : listeners)
+      listener.onValueChanged(value);
+  }
+
+  private ArrayList<PotListener> listeners = new ArrayList<PotListener>();
   private boolean circularMode = false;
   private boolean absoluteMode = false;
   private double startVal = 0.0;
@@ -174,7 +212,9 @@ public class PotView extends View {
   private int linearSize = 128;
   private int imageCountX = 0;
   private int imageCountY = 0;
+  private int controlSteps = 0;
   private Bitmap potMovie = null;
   private Paint moviePaint = new Paint(0);
   private double value = 0.0;
+  private ViewParent scrollView = null;
 }

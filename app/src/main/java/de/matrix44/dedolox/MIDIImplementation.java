@@ -83,4 +83,60 @@ public final class MIDIImplementation {
    *  3: Saw
    *  */
   public static final int CC_OSC1_WAVEFORM = 81;
+
+  /**
+   * OSC 1 coarse tuning.
+   *
+   * Range is +-12 semitones, 64 is center.
+   */
+  public static final int CC_OSC1_COARSE = 82;
+
+  /**
+   * OSC 1 fine tuning.
+   *
+   * Range is +-1 semitone, 64 is center.
+   */
+  public static final int CC_OSC1_FINE = 83;
+
+  /** OSC 1 pulse width. */
+  public static final int CC_OSC1_PULSE = 84;
+
+  /** OSC 1 level. */
+  public static final int CC_OSC1_LEVEL = 85;
+
+  /**
+   *  OSC 2 wave form.
+   *
+   *  0: Sine
+   *  1: Triangle
+   *  2: Rectangle
+   *  3: Saw
+   *  */
+  public static final int CC_OSC2_WAVEFORM = 86;
+
+  /**
+   * OSC 2 coarse tuning.
+   *
+   * Range is +-12 semitones, 64 is center.
+   */
+  public static final int CC_OSC2_COARSE = 87;
+
+  /**
+   * OSC 2 fine tuning.
+   *
+   * Range is +-1 semitone, 64 is center.
+   */
+  public static final int CC_OSC2_FINE = 88;
+
+  /** OSC 2 pulse width. */
+  public static final int CC_OSC2_PULSE = 89;
+
+  /** OSC 1 level. */
+  public static final int CC_OSC2_LEVEL = 90;
+
+  /** Noise level. */
+  public static final int CC_NOISE_LEVEL = 91;
+
+  /** Ringmod level. */
+  public static final int CC_RINGMOD_LEVEL = 92;
 }

@@ -15,27 +15,43 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:weightSum="1">
 
             <view
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 class="de.matrix44.dedolox.WoodPanel"
-                android:id="@+id/view"
+                android:id="@+id/woodPanelLeft"
                 android:layout_gravity="center_vertical"/>
 
             <view
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 class="de.matrix44.dedolox.Osc1Panel"
-                android:id="@+id/view2"
+                android:id="@+id/osc1panel"
+                android:layout_gravity="center_vertical"/>
+
+            <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="de.matrix44.dedolox.Osc2Panel"
+                android:id="@+id/osc2panel"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.49"/>
+
+            <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="de.matrix44.dedolox.MixerPanel"
+                android:id="@+id/mixerpanel"
                 android:layout_gravity="center_vertical"/>
 
             <view
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 class="de.matrix44.dedolox.WoodPanel"
-                android:id="@+id/view3"
+                android:id="@+id/woodPanelRight"
                 android:layout_gravity="center_vertical"/>
 
             <ScrollView
