@@ -30,6 +30,13 @@ class MainAudioThread extends Thread {
   public MainAudioThread() {
   }
 
+  static {
+    System.loadLibrary("stlport_shared");
+    System.loadLibrary("dedoloxNative");
+  }
+
+  private native void audioStart(int sampleRate, int bufferSize);
+
   /**
    * Retrieve the sample rate of this synth.
    *
@@ -177,6 +184,8 @@ class MainAudioThread extends Thread {
     // Create an AudioTrack object:
     AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSize  * 4, AudioTrack.MODE_STREAM);
 
+    audioStart(sampleRate, bufferSize);
+
     // Create audio buffers:
     short[] samples = new short[bufferSize * 2];
     double[] bufferLeft = new double[bufferSize];
@@ -250,10 +259,29 @@ class MainAudioThread extends Thread {
     isRunning = false;
   }
 
-  public static MainAudioThread getAudioThread() {
+  public static void createAudioThread() {
     if (audioThread == null)
       audioThread = new MainAudioThread();
+  }
+
+  public static MainAudioThread getAudioThread() {
     return audioThread;
+  }
+
+  public static void disposeAudioThread() {
+
+    // Already disposed?
+    if (audioThread == null)
+      return;
+
+    // Stop audio playback:
+    try {
+      audioThread.stopAudio();
+      audioThread.join();
+      audioThread = null;
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   /**

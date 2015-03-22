@@ -13,7 +13,9 @@
 package de.matrix44.dedolox;
 
 /**
- *
+ * This is the main oscillator of this sound. It's basically the same as the LFO but this one uses
+ * polyBLEP for alias reduction. See http://www.kvraudio.com/forum/viewtopic.php?t=375517 for
+ * details.
  */
 public class MainOscillator {
 
@@ -135,23 +137,78 @@ public class MainOscillator {
    */
   public double tick() {
 
-    double retval = 0.0;
+    double output;
+    double t = omega / tau;
+    double inc = tau * frequency.tick() / sampleRate;
+    double pw = pulseWidth.tick();
 
     if (waveForm == WaveForm.SINE)
-      retval = Math.sin(omega);
-    else if (waveForm == WaveForm.TRIANGLE)
-      retval = (omega < Math.PI ? omega / Math.PI : (tau - omega) / Math.PI) * 2.0 - 1.0;
-    else if (waveForm == WaveForm.SAW)
-      retval = (tau - omega) / tau * 2.0 - 1.0;
-    else if (waveForm == WaveForm.RECT)
-      retval = omega < Math.PI ? -1.0 : 1.0;
+      output = Math.sin(omega);
 
-    omega += tau * frequency.tick() / sampleRate;
-    if (omega > tau)
+    else if (waveForm == WaveForm.SAW)
+    {
+      output = (omega / pi) - 1.0;
+      output -= poly_blep(t, inc);
+    }
+
+    else if (waveForm == WaveForm.RANDOM)
+      output = 2.0 * Math.random() - 1.0;
+
+    else
+    {
+      if (omega <= (pi * pw))
+        output = 1.0;
+      else
+        output = -1.0;
+      output += poly_blep(t, inc);
+      output -= poly_blep((t + (0.5 * pw)) % 1.0, inc);
+
+      if (waveForm == WaveForm.TRIANGLE)
+      {
+        // Leaky integrator: y[n] = A * x[n] + (1 - A) * y[n-1]
+        output = inc * output + (1.0 - inc) * lastOutput;
+      }
+    }
+
+    omega += inc;
+    while (omega > tau)
       omega -= tau;
 
-    return retval;
+    lastOutput = output;
+
+    return output;
   }
+
+  /**
+   // PolyBLEP by Tale (http://www.kvraudio.com/forum/viewtopic.php?t=375517)
+   * @param t  Current sample value.
+   * @param dt Current phase increment.
+   * @return The BLEP to add to the signal.
+   */
+  private double poly_blep(double t, double dt) {
+
+    dt /= tau;
+
+    // Case 0.0 <= t < 1.0
+    if (t < dt)
+    {
+      t /= dt;
+      return t + t - t * t - 1.0;
+    }
+
+    // Case -1.0 < t < 0.0
+    else if (t > 1.0 - dt)
+    {
+      t = (t - 1.0) / dt;
+      return t * t + t + t + 1.0;
+    }
+
+    // Not on the edge, return 0:
+    return 0.0;
+  }
+
+  /** One little pi. */
+  private static final double pi = Math.PI;
 
   /** Well, two pies... */
   private static final double tau = Math.PI * 2.0;
@@ -163,11 +220,14 @@ public class MainOscillator {
   private double omega = 0.0;
 
   /** Waveform of this oscillator. */
-  private WaveForm waveForm = WaveForm.SAW;
+  private WaveForm waveForm = WaveForm.SINE;
 
   /** Frequency of this oscillator. */
   private final SmoothParameter frequency = new SmoothParameter(Tweak.LFO_MIN_SPEED);
 
   /** Pulse width of this oscillator. */
   private final SmoothParameter pulseWidth = new SmoothParameter(1.0);
+
+  /** The last oscillator output: */
+  private double lastOutput = 0.0;
 }

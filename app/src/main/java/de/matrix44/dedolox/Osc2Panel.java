@@ -11,12 +11,12 @@ import android.widget.FrameLayout;
 public class Osc2Panel extends  SynthPanel {
 
   public Osc2Panel(Context context) {
-    super(context, R.drawable.osc2panel);
+    super(context, R.drawable.greenpanel, R.drawable.osc2);
     init(context);
   }
 
   public Osc2Panel(Context context, AttributeSet attrs) {
-    super(context, attrs, R.drawable.osc2panel);
+    super(context, attrs, R.drawable.greenpanel, R.drawable.osc2);
     init(context);
   }
 
@@ -29,10 +29,10 @@ public class Osc2Panel extends  SynthPanel {
 
   private void init(Context context) {
 
-    waveSel = new WaveSelView(context);
-    waveSel.setWaveSelectionListener(new WaveSelView.WaveSelectionListener() {
+    waveSel = new MultiSelView(context, 4);
+    waveSel.setWaveSelectionListener(new MultiSelView.ValueSelectionListener() {
         @Override
-        public void onWaveSelectionChanged(int newWave) {
+        public void onValueSelectionChanged(int newWave) {
           MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC2_WAVEFORM, newWave);
         }
       }
@@ -72,7 +72,6 @@ public class Osc2Panel extends  SynthPanel {
 
   @Override
   public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    super.onLayout(changed, left, top, right, bottom);
 
     int width  = right - left;
     int height = bottom - top;
@@ -88,33 +87,35 @@ public class Osc2Panel extends  SynthPanel {
 
     if (coarsePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)coarsePot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.59765625 * width);
-      params.topMargin  = (int)(0.15332031 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.5546875 * width);
+      params.topMargin  = (int)(0.110351563 * height);
       coarsePot.setLayoutParams(params);
     }
 
     if (finePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)finePot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.59765625 * width);
-      params.topMargin  = (int)(0.59472656 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.5546875 * width);
+      params.topMargin  = (int)(0.5546875 * height);
       finePot.setLayoutParams(params);
     }
 
     if (pulsePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)pulsePot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.15625 * width);
-      params.topMargin  = (int)(0.59472656 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.109375 * width);
+      params.topMargin  = (int)(0.5546875 * height);
       pulsePot.setLayoutParams(params);
     }
+
+    super.onLayout(changed, left, top, right, bottom);
   }
 
-  private WaveSelView waveSel = null;
+  private MultiSelView waveSel = null;
   private PotView coarsePot = null;
   private PotView finePot = null;
   private PotView pulsePot = null;

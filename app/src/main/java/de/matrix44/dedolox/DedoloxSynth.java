@@ -112,10 +112,19 @@ public class DedoloxSynth {
 
     int note1 = currentNote + osc1coarse;
     if (note1 < 0)
-      note1 = 0;
+      note1 = 1;
     else if (note1 > 127)
-      note1 = 127;
+      note1 = 126;
     double freq1 = noteToFrequency[note1];
+    if (osc1fine < -0.01) {
+      double d = freq1 - noteToFrequency[note1 - 1];
+      freq1 += d * osc1fine;
+    }
+    else if (osc1fine > 0.01) {
+      double d = noteToFrequency[note1 + 1] - freq1;
+      freq1 += d * osc1fine;
+    }
+
 
     int note2 = currentNote + osc2coarse;
     if (note2 < 0)
@@ -123,6 +132,14 @@ public class DedoloxSynth {
     else if (note2 > 127)
       note2 = 127;
     double freq2 = noteToFrequency[note2];
+    if (osc2fine < -0.01) {
+      double d = freq2 - noteToFrequency[note2 - 1];
+      freq2 += d * osc2fine;
+    }
+    else if (osc2fine > 0.01) {
+      double d = noteToFrequency[note2 + 1] - freq2;
+      freq2 += d * osc2fine;
+    }
 
     oscillator1.setFrequency(freq1);
     oscillator2.setFrequency(freq2);
@@ -230,10 +247,6 @@ public class DedoloxSynth {
             ampEnvelope.setAttackTime(Tweak.AHDSR_MIN_TIME + ((Tweak.AHDSR_MAX_TIME - Tweak.AHDSR_MIN_TIME) * nrmVal * nrmVal));
             break;
 
-          case MIDIImplementation.CC_AMPENV_HOLD:
-            ampEnvelope.setHoldTime(Tweak.AHDSR_MIN_TIME + ((Tweak.AHDSR_MAX_TIME - Tweak.AHDSR_MIN_TIME) * nrmVal * nrmVal));
-            break;
-
           case MIDIImplementation.CC_AMPENV_DECAY:
             ampEnvelope.setDecayTime(Tweak.AHDSR_MIN_TIME + ((Tweak.AHDSR_MAX_TIME - Tweak.AHDSR_MIN_TIME) * nrmVal * nrmVal));
             break;
@@ -254,29 +267,25 @@ public class DedoloxSynth {
             if (events[i].value2 == 0)
               lfo1.setWaveForm(LFO.WaveForm.SINE);
             else if (events[i].value2 == 1)
-              lfo1.setWaveForm(LFO.WaveForm.TRIANGLE);
-            else if (events[i].value2 == 2)
               lfo1.setWaveForm(LFO.WaveForm.SAW);
-            else if (events[i].value2 == 3)
+            else if (events[i].value2 == 2)
               lfo1.setWaveForm(LFO.WaveForm.RECT);
-            else if (events[i].value2 == 4)
+            else if (events[i].value2 == 3)
               lfo1.setWaveForm(LFO.WaveForm.RANDOM);
             break;
 
           case MIDIImplementation.CC_LFO2_SPEED:
-            lfo2.setFrequency(Tweak.LFO_MIN_SPEED + ((Tweak.LFO_MAX_SPEED - Tweak.LFO_MAX_SPEED) * nrmVal * nrmVal));
+            lfo2.setFrequency(Tweak.LFO_MIN_SPEED + ((Tweak.LFO_MAX_SPEED - Tweak.LFO_MIN_SPEED) * nrmVal * nrmVal));
             break;
 
           case MIDIImplementation.CC_LFO2_WAVEFORM:
             if (events[i].value2 == 0)
               lfo2.setWaveForm(LFO.WaveForm.SINE);
             else if (events[i].value2 == 1)
-              lfo2.setWaveForm(LFO.WaveForm.TRIANGLE);
-            else if (events[i].value2 == 2)
               lfo2.setWaveForm(LFO.WaveForm.SAW);
-            else if (events[i].value2 == 3)
+            else if (events[i].value2 == 2)
               lfo2.setWaveForm(LFO.WaveForm.RECT);
-            else if (events[i].value2 == 4)
+            else if (events[i].value2 == 3)
               lfo2.setWaveForm(LFO.WaveForm.RANDOM);
             break;
 
@@ -296,11 +305,11 @@ public class DedoloxSynth {
             break;
 
           case MIDIImplementation.CC_OSC1_FINE:
-            osc1fine = (double)(events[i].value2 - 64) / 128.0;
+            osc1fine = (double)(events[i].value2 - 64) / 64.0;
             break;
 
           case MIDIImplementation.CC_OSC1_PULSE:
-            oscillator1.setPulseWidth(nrmVal);
+            oscillator1.setPulseWidth(Tweak.OSC_MIN_PW + ((1.0 - Tweak.OSC_MIN_PW) * nrmVal));
             break;
 
           case MIDIImplementation.CC_OSC1_LEVEL:
@@ -323,7 +332,7 @@ public class DedoloxSynth {
             break;
 
           case MIDIImplementation.CC_OSC2_FINE:
-            osc2fine = (double)(events[i].value2 - 64) / 128.0;
+            osc2fine = (double)(events[i].value2 - 64) / 64.0;
             break;
 
           case MIDIImplementation.CC_OSC2_PULSE:

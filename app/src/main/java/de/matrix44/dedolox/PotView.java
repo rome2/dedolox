@@ -57,7 +57,6 @@ public class PotView extends View {
 
       Rect clientRect = new Rect();
       getDrawingRect(clientRect);
-
       canvas.drawBitmap(potMovie, srcRect, clientRect, moviePaint);
     }
   }
@@ -67,66 +66,74 @@ public class PotView extends View {
 
     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-      // Use circular mode?
-      if (circularMode) {
+      if (event.getX() > (getWidth() / 4) && event.getY() > (getHeight() / 4) && event.getX() < ((3 * getWidth()) / 4) && event.getY() < ((3 * getHeight()) / 4)) {
 
-        // Get value from the mouse position point:
-        startVal = valueFromMousePos(event.getX(), event.getY());
+        knobDown = true;
 
-        // Make value current if needed:
-        if (absoluteMode)
-          setValue(startVal);
+        // Use circular mode?
+        if (circularMode) {
+
+          // Get value from the mouse position point:
+          startVal = valueFromMousePos(event.getX(), event.getY());
+
+          // Make value current if needed:
+          if (absoluteMode)
+            setValue(startVal);
+        }
+
+        // No, linear is the way to go:
+        else {
+          // Save start values:
+          startVal = value;
+          startY = event.getY();
+        }
+
+        if (scrollView != null)
+          scrollView.requestDisallowInterceptTouchEvent(true);
       }
-
-      // No, linear is the way to go:
-      else
-      {
-        // Save start values:
-        startVal = value;
-        startY   = event.getY();
-      }
-
-      if (scrollView != null)
-        scrollView.requestDisallowInterceptTouchEvent(true);
     }
 
     else if (event.getAction() == MotionEvent.ACTION_UP) {
 
-      if (scrollView != null)
+      if (knobDown && scrollView != null)
         scrollView.requestDisallowInterceptTouchEvent(false);
+      knobDown = false;
     }
 
     else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
-      // Running in circles?
-      if (circularMode) {
+      if (knobDown) {
 
-        // Get value from the mouse position point:
-        double val = valueFromMousePos(event.getX(), event.getY());
+        // Running in circles?
+        if (circularMode) {
 
-        // Set value:
-        if (absoluteMode)
-          setValue(val);
-        else {
+          // Get value from the mouse position point:
+          double val = valueFromMousePos(event.getX(), event.getY());
 
-          // Set new value relative to the last value:
-          setValue(value + (val - startVal));
+          // Set value:
+          if (absoluteMode)
+            setValue(val);
+          else {
 
-          // Save current value for the next round:
-          startVal = val;
+            // Set new value relative to the last value:
+            setValue(value + (val - startVal));
+
+            // Save current value for the next round:
+            startVal = val;
+          }
         }
-      }
 
-      // No, we're imitating a fader:
-      else {
-        // Calc movement in pixels:
-        double dy = startY - event.getY();
+        // No, we're imitating a fader:
+        else {
+          // Calc movement in pixels:
+          double dy = startY - event.getY();
 
-        // Scale into a more usable range:
-        double diff = dy / linearSize;
+          // Scale into a more usable range:
+          double diff = dy / linearSize;
 
-        // Set new value relative to the start value:
-        setValue(startVal + diff);
+          // Set new value relative to the start value:
+          setValue(startVal + diff);
+        }
       }
     }
 
@@ -217,4 +224,5 @@ public class PotView extends View {
   private Paint moviePaint = new Paint(0);
   private double value = 0.0;
   private ViewParent scrollView = null;
+  private boolean knobDown = false;
 }

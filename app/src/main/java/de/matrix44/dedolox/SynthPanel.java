@@ -24,6 +24,11 @@ public class SynthPanel extends FrameLayout {
     init(context, backpicID);
   }
 
+  public SynthPanel(Context context, int backpicID, int frontPicID) {
+    super(context);
+    init(context, backpicID, frontPicID);
+  }
+
   public SynthPanel(Context context, AttributeSet attrs) {
     super(context, attrs);
     init(context, 0);
@@ -32,6 +37,11 @@ public class SynthPanel extends FrameLayout {
   public SynthPanel(Context context, AttributeSet attrs, int backpicID) {
     super(context, attrs);
     init(context, backpicID);
+  }
+
+  public SynthPanel(Context context, AttributeSet attrs, int backpicID, int frontPicID) {
+    super(context, attrs);
+    init(context, backpicID, frontPicID);
   }
 
   @Override
@@ -63,17 +73,27 @@ public class SynthPanel extends FrameLayout {
       getDrawingRect(clientRect);
 
       canvas.drawBitmap(backPic, srcRect, clientRect, backPicPaint);
+
+      if (frontPic != null)
+        canvas.drawBitmap(frontPic, srcRect, clientRect, backPicPaint);
     }
     else
       super.draw(canvas);
   }
 
-  protected void init(Context context, int backpicID) {
+  protected void init(Context context, int backpicID, int frontPicID) {
     this.setWillNotDraw(false);
     if (backpicID != 0)
       backPic = ResourceManager.getBitmap(context, backpicID);
+    if (frontPicID != 0)
+      frontPic = ResourceManager.getBitmap(context, frontPicID);
+  }
+
+  protected void init(Context context, int backpicID) {
+    init(context, backpicID, 0);
   }
 
   private Bitmap backPic = null;
+  private Bitmap frontPic = null;
   private Paint backPicPaint = new Paint(0);
 }

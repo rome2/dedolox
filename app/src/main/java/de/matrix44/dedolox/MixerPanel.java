@@ -11,12 +11,12 @@ import android.widget.FrameLayout;
 public class MixerPanel extends  SynthPanel {
 
   public MixerPanel(Context context) {
-    super(context, R.drawable.mixerpanel);
+    super(context, R.drawable.greenpanel, R.drawable.mixer);
     init(context);
   }
 
   public MixerPanel(Context context, AttributeSet attrs) {
-    super(context, attrs, R.drawable.mixerpanel);
+    super(context, R.drawable.greenpanel, R.drawable.mixer);
     init(context);
   }
 
@@ -68,46 +68,47 @@ public class MixerPanel extends  SynthPanel {
 
   @Override
   public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    super.onLayout(changed, left, top, right, bottom);
 
     int width  = right - left;
     int height = bottom - top;
 
     if (osc1Pot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)osc1Pot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.15625 * width);
-      params.topMargin  = (int)(0.15332031 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.109375 * width);
+      params.topMargin  = (int)(0.110351563 * height);
       osc1Pot.setLayoutParams(params);
     }
 
     if (osc2Pot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)osc2Pot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.59765625 * width);
-      params.topMargin  = (int)(0.15332031 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.5546875 * width);
+      params.topMargin  = (int)(0.110351563 * height);
       osc2Pot.setLayoutParams(params);
     }
 
     if (ringPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)ringPot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.59765625 * width);
-      params.topMargin  = (int)(0.59472656 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.5546875 * width);
+      params.topMargin  = (int)(0.5546875 * height);
       ringPot.setLayoutParams(params);
     }
 
     if (noisePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)noisePot.getLayoutParams();
-      params.width      = (int)(0.25 * width);
-      params.height     = (int)(0.25 * height);
-      params.leftMargin = (int)(0.15625 * width);
-      params.topMargin  = (int)(0.59472656 * height);
+      params.width      = (int)(0.336914063 * width);
+      params.height     = (int)(0.336914063 * height);
+      params.leftMargin = (int)(0.109375 * width);
+      params.topMargin  = (int)(0.5546875 * height);
       noisePot.setLayoutParams(params);
     }
+
+    super.onLayout(changed, left, top, right, bottom);
   }
 
   private PotView osc1Pot = null;

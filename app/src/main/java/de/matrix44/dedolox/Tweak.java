@@ -48,4 +48,7 @@ public class Tweak {
 
   /** Max filter resonance: */
   public static final double FILTER_MAX_RESONANCE = 4.0;
+
+  /** Min pulse width: */
+  public static final double OSC_MIN_PW = 0.1;
 }

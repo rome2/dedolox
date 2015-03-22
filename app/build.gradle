@@ -2,14 +2,33 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "de.matrix44.dedolox"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        // Don't forget to update the NDK directory in local.properties (ndk.dir)!
+        ndk {
+            // The library to create. The build system create one libdedoloxNative.so for every
+            // platform.
+            moduleName "dedoloxNative"
+
+            // Additional cpp flags. Add provisions to allow C++11 functionality, exceptions and
+            // RTTI.
+            cFlags "-std=c++11 -fexceptions -frtti"
+
+            // The system libs to load., eg "EGL", "GLESv3"
+            ldLibs "log", "m", "OpenSLES"
+
+            // The c++ runtime to use. // The choices are: gnustl_shared, stlport_shared, c++_shared
+            // or gabi++_shared. Make sure to change the matching loadLibrary call in your java code
+            // if you change this value.
+            stl "stlport_shared"
+        }
     }
     buildTypes {
         release {

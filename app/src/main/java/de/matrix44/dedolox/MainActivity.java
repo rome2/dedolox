@@ -1,10 +1,13 @@
 package de.matrix44.dedolox;
 
+import android.content.Context;
+import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.view.View;
 import android.widget.HorizontalScrollView;
@@ -12,7 +15,6 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 
 public class MainActivity extends ActionBarActivity {
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -189,138 +191,40 @@ public class MainActivity extends ActionBarActivity {
       public void onStopTrackingTouch(SeekBar seekBar) { }
     });
 
-    final SeekBar seekBar2 = (SeekBar)findViewById(R.id.seekBar2);
-    seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_ATTACK, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar3 = (SeekBar)findViewById(R.id.seekBar3);
-    seekBar3.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_HOLD, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar4 = (SeekBar)findViewById(R.id.seekBar4);
-    seekBar4.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_DECAY, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar5 = (SeekBar)findViewById(R.id.seekBar5);
-    seekBar5.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_SUSTAIN, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar6 = (SeekBar)findViewById(R.id.seekBar6);
-    seekBar6.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_RELEASE, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar7 = (SeekBar)findViewById(R.id.seekBar7);
-    seekBar7.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO1_SPEED, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar8 = (SeekBar)findViewById(R.id.seekBar8);
-    seekBar8.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_FREQ, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
-    final SeekBar seekBar9 = (SeekBar)findViewById(R.id.seekBar9);
-    seekBar9.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_RESONANCE, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
     HorizontalScrollView scrollView = (HorizontalScrollView)findViewById(R.id.horizontalScrollView);
     ((Osc1Panel)findViewById(R.id.osc1panel)).setScrollView(scrollView);
     ((Osc2Panel)findViewById(R.id.osc2panel)).setScrollView(scrollView);
-    ((MixerPanel)findViewById(R.id.mixerpanel)).setScrollView(scrollView);
+    //((MixerPanel)findViewById(R.id.mixerpanel)).setScrollView(scrollView);
+    ((AmpEnvPanel)findViewById(R.id.ampenvpanel)).setScrollView(scrollView);
+    ((FilterPanel)findViewById(R.id.filterpanel)).setScrollView(scrollView);
+    ((FilterEnvPanel)findViewById(R.id.filterenvpanel)).setScrollView(scrollView);
+
+    // Make sure that the screens doesn't turn off:
+    this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    // Create audio thread:
+    MainAudioThread.createAudioThread();
 
     // Start to synthesise audio:
     MainAudioThread.getAudioThread().start();
   }
 
+  @Override
+  public void onPause() {
+    super.onPause();
+
+    // Stop audio system:
+    MainAudioThread.disposeAudioThread();
+  }
 
   @Override
   public void onDestroy(){
     super.onDestroy();
-
-    try {
-      MainAudioThread.getAudioThread().stopAudio();
-      MainAudioThread.getAudioThread().join();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
