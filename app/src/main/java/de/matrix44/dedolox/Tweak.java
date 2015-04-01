@@ -40,14 +40,14 @@ public class Tweak {
   /** Max oscillator speed in hertz: */
   public static final double OSC_MAX_SPEED = 14000.0;
 
-  /** Min filter frequency in hertz: */
-  public static final double FILTER_MIN_FREQ = 10.0;
+  /** Min filter cutoff: */
+  public static final double FILTER_MIN_CUTOFF = 0.01;
 
   /** Max filter frequency in hertz: */
-  public static final double FILTER_MAX_FREQ = 14000.0;
+  public static final double FILTER_MAX_CUTOFF = 0.99;
 
   /** Max filter resonance: */
-  public static final double FILTER_MAX_RESONANCE = 4.0;
+  public static final double FILTER_MAX_RESONANCE = 1.0;
 
   /** Min pulse width: */
   public static final double OSC_MIN_PW = 0.1;

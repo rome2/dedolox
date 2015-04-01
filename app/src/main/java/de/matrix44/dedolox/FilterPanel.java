@@ -11,12 +11,12 @@ import android.widget.FrameLayout;
 public class FilterPanel extends  SynthPanel {
 
   public FilterPanel(Context context) {
-    super(context, R.drawable.bluepanel, R.drawable.filter);
+    super(context, R.drawable.filter);
     init(context);
   }
 
   public FilterPanel(Context context, AttributeSet attrs) {
-    super(context, attrs, R.drawable.yellowpanel, R.drawable.filter);
+    super(context, attrs, R.drawable.filter);
     init(context);
   }
 
@@ -28,35 +28,70 @@ public class FilterPanel extends  SynthPanel {
     resonancePot.setScrollView(target);
   }
 
+  public void midiIn(MIDIEvent event) {
+
+    if (event.message != 0xB0 || event.value2 < 0)
+      return;
+
+    if (event.value1 == MIDIImplementation.CC_FILTER_MODE) {
+      modeSel.blockUpdates(false);
+      modeSel.setValue(event.value2);
+      modeSel.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTER_CUTOFF) {
+      cutoffPot.blockUpdates(false);
+      cutoffPot.setValue(event.value2 / 127.0);
+      cutoffPot.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTER_SLOPE) {
+      slopeSel.blockUpdates(false);
+      slopeSel.setValue(event.value2);
+      slopeSel.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTER_RESONANCE) {
+      resonancePot.blockUpdates(false);
+      resonancePot.setValue(event.value2 / 127.0);
+      resonancePot.blockUpdates(true);
+    }
+  }
+
+  public void setPreset(DedoloxPreset preset) {
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_MODE));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_CUTOFF));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_SLOPE));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_RESONANCE));
+  }
+
   private void init(Context context) {
 
     modeSel = new MultiSelView(context, 3);
     modeSel.setWaveSelectionListener(new MultiSelView.ValueSelectionListener() {
-                                       @Override
-                                       public void onValueSelectionChanged(int newMode) {
-                                         MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_MODE, newMode);
-                                       }
-                                     }
-    );
+      @Override
+      public void onValueSelectionChanged(int newMode) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_MODE, newMode);
+      }
+    });
     addView(modeSel, new FrameLayout.LayoutParams(100, 100));
 
     cutoffPot = new PotView(context);
     cutoffPot.setPotListener(new PotView.PotListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_FREQ, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_CUTOFF, (int)(127.0 * newVal));
       }
     });
     addView(cutoffPot, new FrameLayout.LayoutParams(100, 100));
 
     slopeSel = new MultiSelView(context, 2);
     modeSel.setWaveSelectionListener(new MultiSelView.ValueSelectionListener() {
-                                       @Override
-                                       public void onValueSelectionChanged(int newSlope) {
-                                         MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_SLOPE, newSlope);
-                                       }
-                                     }
-    );
+      @Override
+      public void onValueSelectionChanged(int newSlope) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_SLOPE, newSlope);
+      }
+    });
     addView(slopeSel, new FrameLayout.LayoutParams(100, 100));
 
     resonancePot = new PotView(context);

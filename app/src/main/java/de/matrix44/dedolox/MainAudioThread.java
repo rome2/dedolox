@@ -192,7 +192,7 @@ class MainAudioThread extends Thread {
     double[] bufferRight = new double[bufferSize];
 
     // Create and init our synth:
-    DedoloxSynth synth = new DedoloxSynth();
+    synth = new DedoloxSynth();
     synth.setBufferSize(bufferSize);
     synth.setSampleRate(sampleRate);
 
@@ -264,6 +264,32 @@ class MainAudioThread extends Thread {
       audioThread = new MainAudioThread();
   }
 
+  /**
+   * Extract the current state of the synth as preset.
+   *
+   * @return A preset containing the state of the synth.
+   */
+  public DedoloxPreset getPreset() {
+    if (synth != null)
+      return synth.getPreset();
+    return null;
+  }
+
+  /**
+   * Set a new state from a preset.
+
+   * @param preset The new state.
+   */
+  public void loadPreset(DedoloxPreset preset) {
+    if (synth != null)
+      synth.loadPreset(preset);
+    else {
+      MIDIEvent[] data = preset.getValues();
+      for (int i = 0; i < data.length; i++)
+        addMidiEvent(data[i].channel, data[i].message, data[i].value1, data[i].value2);
+    }
+  }
+
   public static MainAudioThread getAudioThread() {
     return audioThread;
   }
@@ -295,6 +321,10 @@ class MainAudioThread extends Thread {
    * @param value2  Second parameter of the commands.
    */
   private void addMidiEvent(int channel, int message, int value1, int value2) {
+
+    // Ignore messages in muted state:
+    if (synth != null && synth.isMuted())
+      return;
 
     // Lock buffers:
     synchronized (inputBufferLock) {
@@ -359,4 +389,7 @@ class MainAudioThread extends Thread {
 
   /** The one and only audio thread. */
   private static MainAudioThread audioThread = null;
+
+  /** The synth itself. */
+  private DedoloxSynth synth = null;
 }

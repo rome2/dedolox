@@ -11,12 +11,12 @@ import android.widget.FrameLayout;
 public class FilterEnvPanel extends  SynthPanel {
 
   public FilterEnvPanel(Context context) {
-    super(context, R.drawable.purplepanel, R.drawable.filterenvelope);
+    super(context, R.drawable.filterenvelope);
     init(context);
   }
 
   public FilterEnvPanel(Context context, AttributeSet attrs) {
-    super(context, attrs, R.drawable.purplepanel, R.drawable.filterenvelope);
+    super(context, attrs, R.drawable.filterenvelope);
     init(context);
   }
 
@@ -25,6 +25,43 @@ public class FilterEnvPanel extends  SynthPanel {
     decayFader.setScrollView(target);
     sustainFader.setScrollView(target);
     releaseFader.setScrollView(target);
+  }
+
+  public void midiIn(MIDIEvent event) {
+
+    if (event.message != 0xB0 || event.value2 < 0)
+      return;
+
+    if (event.value1 == MIDIImplementation.CC_FILTERENV_ATTACK) {
+      attackFader.blockUpdates(false);
+      attackFader.setValue(event.value2 / 127.0);
+      attackFader.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTERENV_DECAY) {
+      decayFader.blockUpdates(false);
+      decayFader.setValue(event.value2 / 127.0);
+      decayFader.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTERENV_SUSTAIN) {
+      sustainFader.blockUpdates(false);
+      sustainFader.setValue(event.value2 / 127.0);
+      sustainFader.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_FILTERENV_RELEASE) {
+      releaseFader.blockUpdates(false);
+      releaseFader.setValue(event.value2 / 127.0);
+      releaseFader.blockUpdates(true);
+    }
+  }
+
+  public void setPreset(DedoloxPreset preset) {
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTERENV_ATTACK));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTERENV_DECAY));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTERENV_SUSTAIN));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTERENV_RELEASE));
   }
 
   private void init(Context context) {

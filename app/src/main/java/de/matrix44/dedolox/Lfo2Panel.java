@@ -2,29 +2,28 @@ package de.matrix44.dedolox;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 /**
- * Created by rollo on 17.01.15.
+ * Created by rollo on 23.03.15.
  */
-public class Osc1Panel extends  SynthPanel {
+public class Lfo2Panel extends  SynthPanel {
 
-  public Osc1Panel(Context context) {
-    super(context, R.drawable.osc1);
+  public Lfo2Panel(Context context) {
+    super(context, R.drawable.lfo2);
     init(context);
   }
 
-  public Osc1Panel(Context context, AttributeSet attrs) {
-    super(context, attrs, R.drawable.osc1);
+  public Lfo2Panel(Context context, AttributeSet attrs) {
+    super(context, attrs, R.drawable.lfo2);
     init(context);
   }
 
   public void setScrollView(ViewParent target) {
     waveSel.setScrollView(target);
-    coarsePot.setScrollView(target);
-    finePot.setScrollView(target);
+    ratePot.setScrollView(target);
+    filterPot.setScrollView(target);
     pulsePot.setScrollView(target);
   }
 
@@ -33,25 +32,25 @@ public class Osc1Panel extends  SynthPanel {
     if (event.message != 0xB0 || event.value2 < 0)
       return;
 
-    if (event.value1 == MIDIImplementation.CC_OSC1_WAVEFORM) {
+    if (event.value1 == MIDIImplementation.CC_LFO2_WAVEFORM) {
       waveSel.blockUpdates(false);
       waveSel.setValue(event.value2);
       waveSel.blockUpdates(true);
     }
 
-    if (event.value1 == MIDIImplementation.CC_OSC1_COARSE) {
-      coarsePot.blockUpdates(false);
-      coarsePot.setValue((((event.value2 - 64) / 12.0) + 1.0) * 0.5);
-      coarsePot.blockUpdates(true);
+    if (event.value1 == MIDIImplementation.CC_LFO2_SPEED) {
+      ratePot.blockUpdates(false);
+      ratePot.setValue(event.value2 / 127.0);
+      ratePot.blockUpdates(true);
     }
 
-    if (event.value1 == MIDIImplementation.CC_OSC1_FINE) {
-      finePot.blockUpdates(false);
-      finePot.setValue(event.value2 / 127.0);
-      finePot.blockUpdates(true);
+    if (event.value1 == MIDIImplementation.CC_LFO2_CUTOFF) {
+      filterPot.blockUpdates(false);
+      filterPot.setValue(event.value2 / 127.0);
+      filterPot.blockUpdates(true);
     }
 
-    if (event.value1 == MIDIImplementation.CC_OSC1_PULSE) {
+    if (event.value1 == MIDIImplementation.CC_LFO2_PULSE) {
       pulsePot.blockUpdates(false);
       pulsePot.setValue(event.value2 / 127.0);
       pulsePot.blockUpdates(true);
@@ -59,10 +58,10 @@ public class Osc1Panel extends  SynthPanel {
   }
 
   public void setPreset(DedoloxPreset preset) {
-    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC1_WAVEFORM));
-    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC1_COARSE));
-    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC1_FINE));
-    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC1_PULSE));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_LFO2_WAVEFORM));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_LFO2_SPEED));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_LFO2_CUTOFF));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_LFO2_PULSE));
   }
 
   private void init(Context context) {
@@ -71,37 +70,35 @@ public class Osc1Panel extends  SynthPanel {
     waveSel.setWaveSelectionListener(new MultiSelView.ValueSelectionListener() {
       @Override
       public void onValueSelectionChanged(int newWave) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_WAVEFORM, newWave);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO2_WAVEFORM, newWave);
       }
-    });
+     });
     addView(waveSel, new FrameLayout.LayoutParams(100, 100));
 
-    coarsePot = new PotView(context);
-    coarsePot.setControlSteps(25);
-    coarsePot.setPotListener(new PotView.PotListener() {
+    ratePot = new PotView(context);
+    ratePot.setControlSteps(25);
+    ratePot.setPotListener(new PotView.PotListener() {
       @Override
       public void onValueChanged(double newVal) {
-        newVal = (newVal * 2.0) - 1.0;
-        int iVal = 64 + (int)Math.floor(newVal * 12.0);
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_COARSE, iVal);
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO2_SPEED, (int) (127.0 * newVal));
       }
     });
-    addView(coarsePot, new FrameLayout.LayoutParams(100, 100));
+    addView(ratePot, new FrameLayout.LayoutParams(100, 100));
 
-    finePot = new PotView(context);
-    finePot.setPotListener(new PotView.PotListener() {
+    filterPot = new PotView(context);
+    filterPot.setPotListener(new PotView.PotListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_FINE, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO2_CUTOFF, (int) (127.0 * newVal));
       }
     });
-    addView(finePot, new FrameLayout.LayoutParams(100, 100));
+    addView(filterPot, new FrameLayout.LayoutParams(100, 100));
 
     pulsePot = new PotView(context);
     pulsePot.setPotListener(new PotView.PotListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_PULSE, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_LFO2_PULSE, (int) (127.0 * newVal));
       }
     });
     addView(pulsePot, new FrameLayout.LayoutParams(100, 100));
@@ -109,7 +106,6 @@ public class Osc1Panel extends  SynthPanel {
 
   @Override
   public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
     int width  = right - left;
     int height = bottom - top;
 
@@ -122,26 +118,26 @@ public class Osc1Panel extends  SynthPanel {
       waveSel.setLayoutParams(params);
     }
 
-    if (coarsePot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)coarsePot.getLayoutParams();
+    if (ratePot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) ratePot.getLayoutParams();
       params.width      = (int)(0.336914063 * width);
       params.height     = (int)(0.336914063 * height);
       params.leftMargin = (int)(0.5546875 * width);
       params.topMargin  = (int)(0.110351563 * height);
-      coarsePot.setLayoutParams(params);
+      ratePot.setLayoutParams(params);
     }
 
-    if (finePot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)finePot.getLayoutParams();
+    if (filterPot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) filterPot.getLayoutParams();
       params.width      = (int)(0.336914063 * width);
       params.height     = (int)(0.336914063 * height);
       params.leftMargin = (int)(0.5546875 * width);
       params.topMargin  = (int)(0.5546875 * height);
-      finePot.setLayoutParams(params);
+      filterPot.setLayoutParams(params);
     }
 
     if (pulsePot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)pulsePot.getLayoutParams();
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) pulsePot.getLayoutParams();
       params.width      = (int)(0.336914063 * width);
       params.height     = (int)(0.336914063 * height);
       params.leftMargin = (int)(0.109375 * width);
@@ -153,7 +149,7 @@ public class Osc1Panel extends  SynthPanel {
   }
 
   private MultiSelView waveSel = null;
-  private PotView coarsePot = null;
-  private PotView finePot = null;
+  private PotView ratePot = null;
+  private PotView filterPot = null;
   private PotView pulsePot = null;
 }

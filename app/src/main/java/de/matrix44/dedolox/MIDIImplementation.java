@@ -23,7 +23,7 @@ package de.matrix44.dedolox;
 public final class MIDIImplementation {
 
   /** Filter frequency. */
-  public static final int CC_FILTER_FREQ = 3;
+  public static final int CC_FILTER_CUTOFF = 3;
 
   /** Filter mode.
    *
@@ -32,6 +32,9 @@ public final class MIDIImplementation {
    * 2: Band pass.
    * */
   public static final int CC_FILTER_MODE = 4;
+
+  /** Portamento time (0 = off). */
+  public static final int CC_PORTAMENTO_TIME = 5;
 
   /** Master volume of the entire synth. */
   public static final int CC_MASTER_VOL = 7;
@@ -58,6 +61,33 @@ public final class MIDIImplementation {
   /** Decay time of the filrwe envelope. */
   public static final int CC_FILTERENV_DECAY = 22;
 
+  /** LFO 1 amp modulation. */
+  public static final int CC_LFO1_VOLUME = 23;
+
+  /** LFO 2 filter modulation. */
+  public static final int CC_LFO2_CUTOFF = 24;
+
+  /** LFO 2 pulse width modulation. */
+  public static final int CC_LFO2_PULSE = 25;
+
+  /** Distortion on/off (0 = off, 1 = on). */
+  public static final int CC_DISTORTION_ENABLE = 26;
+
+  /** Distortion gain. */
+  public static final int CC_DISTORTION_GAIN = 27;
+
+  /** Distortion tone. */
+  public static final int CC_DISTORTION_TONE = 28;
+
+  /** Distortion volume. */
+  public static final int CC_DISTORTION_VOLUME = 29;
+
+  /** Velocity sensitivity. */
+  public static final int CC_VELOCITY_SENS = 30;
+
+  // [...]
+  // 31
+
   /** Sustain level of the amplifier envelope. */
   public static final int CC_AMPENV_SUSTAIN = 71;
 
@@ -72,6 +102,9 @@ public final class MIDIImplementation {
 
   /** LFO 1 speed. */
   public static final  int CC_LFO1_SPEED = 76;
+
+  /** LFO 1 pitch modulation. */
+  public static final int CC_LFO1_PITCH = 77;
 
   /**
    *  LFO 1 wave form.
@@ -148,17 +181,44 @@ public final class MIDIImplementation {
    *
    * Range is +-1 semitone, 64 is center.
    */
-  public static final int CC_OSC2_FINE = 88;
+  public static final int CC_OSC2_FINE = 89;
 
   /** OSC 2 pulse width. */
-  public static final int CC_OSC2_PULSE = 89;
+  public static final int CC_OSC2_PULSE = 90;
 
   /** OSC 1 level. */
-  public static final int CC_OSC2_LEVEL = 90;
+  public static final int CC_OSC2_LEVEL = 102;
 
   /** Noise level. */
-  public static final int CC_NOISE_LEVEL = 91;
+  public static final int CC_NOISE_LEVEL = 103;
 
   /** Ringmod level. */
-  public static final int CC_RINGMOD_LEVEL = 92;
+  public static final int CC_RINGMOD_LEVEL = 104;
+
+  /** Phaser on/off (0 = off, 1 = on) */
+  public static final int CC_PHASER_ENABLE = 105;
+
+  /** Phaser rate. */
+  public static final int CC_PHASER_RATE = 106;
+
+  /** Phaser depth. */
+  public static final int CC_PHASER_DEPTH = 107;
+
+  /** Phaser feedback. */
+  public static final int CC_PHASER_FEEDBACK = 108;
+
+  /** Delay on/off (0 = off, 1 = on) */
+  public static final int CC_DELAY_ENABLE = 109;
+
+  /** Delay time. */
+  public static final int CC_DELAY_TIME = 110;
+
+  /** Delay feedback. */
+  public static final int CC_DELAY_FEEDBACK = 111;
+
+  /** Delay mix. */
+  public static final int CC_DELAY_MIX = 112;
+
+  // [...]
+  // 119
 }

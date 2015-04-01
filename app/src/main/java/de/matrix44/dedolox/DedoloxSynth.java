@@ -94,6 +94,44 @@ public class DedoloxSynth {
   }
 
   /**
+   * Extract the current state of the synth as preset.
+   *
+   * @return A preset containing the state of the synth.
+   */
+  public DedoloxPreset getPreset() {
+    return new DedoloxPreset(currentBuffer);
+  }
+
+  /**
+   * Set a new state from a preset.
+
+   * @param preset The new state.
+   */
+  public void loadPreset(DedoloxPreset preset) {
+
+    // Block audio out:
+    muted = true;
+
+    // Load values:
+    handleMIDIEvents(preset.getValues(), 128);
+
+    // Copy meta data:
+    currentBuffer.copyMeta(preset);
+
+    // Unblock audio:
+    muted = false;
+  }
+
+  /**
+   *  Is the synth currently muted?
+   *
+   * @return The current muted state.
+   */
+  public boolean isMuted() {
+    return muted;
+  }
+
+  /**
    * The actual audio processing function.
    *
    * This function is called from the audio engine. The synth will fill the supplied buffers with
@@ -106,6 +144,13 @@ public class DedoloxSynth {
    * @param eventCount   Number of valid entries in the events array.
    */
   public void process(double[] left, double[] right, int sampleFrames, MIDIEvent[] events, int eventCount) {
+
+    // Currently muted?
+    if (muted) {
+      for (int i = 0; i < sampleFrames; i++)
+        left[i] = right[i] = 0.0;
+      return;
+    }
 
     // Update input data:
     handleMIDIEvents(events, eventCount);
@@ -184,7 +229,8 @@ public class DedoloxSynth {
   }
 
   /**
-   * Internal helper function that decodes incoming MIDI events and update the synth accordingly.
+   * Internal helper function that decodes incoming MIDI events and update the synth accordingly. It
+   * is also used to load preset values via loadPreset();
    *
    * The MIDI array is pre allocated so never use it's length to determine the number of events to
    * process.
@@ -225,14 +271,37 @@ public class DedoloxSynth {
       // Control change
       else if (events[i].message == 0xB0) {
 
+        // Update preset:
+        currentBuffer.setValue(events[i].value1, events[i].value2);
+
+        // Negative values mean empty events (during preset loading etc):
+        if (events[i].value2 < 0)
+          continue;
+
         // Scale value to range [0, 1]:
         double nrmVal = (double)events[i].value2 / 127.0;
 
         // Check CC numbers:
         switch (events[i].value1) {
 
-          case MIDIImplementation.CC_FILTER_FREQ:
-            filter.setFrequency(Tweak.FILTER_MIN_FREQ + ((Tweak.FILTER_MAX_FREQ - Tweak.FILTER_MIN_FREQ) * nrmVal * nrmVal));
+          case MIDIImplementation.CC_FILTER_CUTOFF:
+            filter.setCutoff(Tweak.FILTER_MIN_CUTOFF + ((Tweak.FILTER_MAX_CUTOFF - Tweak.FILTER_MIN_CUTOFF) * nrmVal));
+            break;
+
+          case MIDIImplementation.CC_FILTER_MODE:
+            if (events[i].value2 == 0)
+              filter.setMode(ResonantFilter.Mode.LOWPASS);
+            else if (events[i].value2 == 1)
+              filter.setMode(ResonantFilter.Mode.HIGHPASS);
+            else if (events[i].value2 == 2)
+              filter.setMode(ResonantFilter.Mode.BANDPASS);
+            break;
+
+          case MIDIImplementation.CC_FILTER_SLOPE:
+            if (events[i].value2 == 0)
+              filter.setSlope(ResonantFilter.Slope.DB12);
+            else if (events[i].value2 == 1)
+              filter.setSlope(ResonantFilter.Slope.DB24);
             break;
 
           case MIDIImplementation.CC_MASTER_VOL:
@@ -398,7 +467,7 @@ public class DedoloxSynth {
   private final SmoothParameter ringmodVolume = new SmoothParameter(0.0);
 
   /** The filter used in this synth. */
-  private final MoogFilter filter = new MoogFilter();
+  private final ResonantFilter filter = new ResonantFilter();
 
   /** First main oscillator. */
   private final MainOscillator oscillator1 = new MainOscillator();
@@ -417,4 +486,10 @@ public class DedoloxSynth {
 
   /** Second main oscillator. */
   private final MainOscillator oscillator2 = new MainOscillator();
+
+  /** The current synth state as MIDI preset. */
+  private final DedoloxPreset currentBuffer = new DedoloxPreset();
+
+  /** Is the synth currently muted? */
+  private boolean muted = false;
 }

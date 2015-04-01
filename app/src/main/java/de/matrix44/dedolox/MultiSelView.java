@@ -123,6 +123,15 @@ public class MultiSelView extends View {
     scrollView = target;
   }
 
+  public void blockUpdates(boolean block) {
+    if (block)
+      blockCount++;
+    else
+      blockCount--;
+    if (blockCount == 0)
+      invalidate();
+  }
+
   private void init(Context context, int imageCount) {
 
     this.imageCount = imageCount;
@@ -132,11 +141,16 @@ public class MultiSelView extends View {
       buttonMovie = ResourceManager.getBitmap(context, R.drawable.selknob3);
     if (imageCount == 3)
       buttonMovie = ResourceManager.getBitmap(context, R.drawable.selknob2);
-    if (imageCount == 2)
+    if (imageCount == 2) {
       buttonMovie = ResourceManager.getBitmap(context, R.drawable.selknob1);
+      this.imageCount = 3;
+    }
   }
 
   private void fireValueSelectionChanged() {
+
+    if (blockCount != 0)
+      return;
 
     for (ValueSelectionListener listener : listeners)
       listener.onValueSelectionChanged(value);
@@ -149,4 +163,5 @@ public class MultiSelView extends View {
   private Paint moviePaint = new Paint(0);
   private int value = 0;
   private ViewParent scrollView = null;
+  private int blockCount = 0;
 }

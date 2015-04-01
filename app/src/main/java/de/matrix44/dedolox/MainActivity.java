@@ -1,7 +1,5 @@
 package de.matrix44.dedolox;
 
-import android.content.Context;
-import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +9,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 
 public class MainActivity extends ActionBarActivity {
@@ -177,27 +174,19 @@ public class MainActivity extends ActionBarActivity {
       }
     });
 
-    final SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar);
-    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // Perform action on click
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_MASTER_VOL, progress);
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
-    });
-
     HorizontalScrollView scrollView = (HorizontalScrollView)findViewById(R.id.horizontalScrollView);
-    ((Osc1Panel)findViewById(R.id.osc1panel)).setScrollView(scrollView);
-    ((Osc2Panel)findViewById(R.id.osc2panel)).setScrollView(scrollView);
-    //((MixerPanel)findViewById(R.id.mixerpanel)).setScrollView(scrollView);
-    ((AmpEnvPanel)findViewById(R.id.ampenvpanel)).setScrollView(scrollView);
-    ((FilterPanel)findViewById(R.id.filterpanel)).setScrollView(scrollView);
-    ((FilterEnvPanel)findViewById(R.id.filterenvpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.osc1panel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.osc2panel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.mixerpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.ampenvpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.filterpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.filterenvpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.lfo1panel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.lfo2panel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.distortionpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.phaserpanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.delaypanel)).setScrollView(scrollView);
+    ((SynthPanel)findViewById(R.id.masterpanel)).setScrollView(scrollView);
 
     // Make sure that the screens doesn't turn off:
     this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -212,11 +201,43 @@ public class MainActivity extends ActionBarActivity {
 
     // Start to synthesise audio:
     MainAudioThread.getAudioThread().start();
+
+    // Load current state:
+    DedoloxPreset state = new DedoloxPreset();
+    state.load(this, "statebuffer.xml", false);
+    setPreset(state);
+  }
+
+  private void setPreset(DedoloxPreset preset) {
+
+    // Fill synth:
+    MainAudioThread.getAudioThread().loadPreset(preset);
+
+    // Update UI:
+    ((SynthPanel)findViewById(R.id.osc1panel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.osc2panel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.mixerpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.ampenvpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.filterpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.filterenvpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.lfo1panel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.lfo2panel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.distortionpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.phaserpanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.delaypanel)).setPreset(preset);
+    ((SynthPanel)findViewById(R.id.masterpanel)).setPreset(preset);
   }
 
   @Override
   public void onPause() {
     super.onPause();
+
+    // save current state:
+    DedoloxPreset state = MainAudioThread.getAudioThread().getPreset();
+    if (state != null) {
+      state.setName("Current Buffer");
+      state.save(this, "statebuffer.xml");
+    }
 
     // Stop audio system:
     MainAudioThread.disposeAudioThread();

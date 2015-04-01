@@ -169,6 +169,15 @@ public class PotView extends View {
     this.listeners.add(listener);
   }
 
+  public void blockUpdates(boolean block) {
+    if (block)
+      blockCount++;
+    else
+      blockCount--;
+    if (blockCount == 0)
+      invalidate();
+  }
+
   private void init(Context context) {
 
     imageCountX = 16;
@@ -207,6 +216,9 @@ public class PotView extends View {
 
   private void fireValueChanged() {
 
+    if (blockCount != 0)
+      return;
+
     for (PotListener listener : listeners)
       listener.onValueChanged(value);
   }
@@ -225,4 +237,5 @@ public class PotView extends View {
   private double value = 0.0;
   private ViewParent scrollView = null;
   private boolean knobDown = false;
+  private int blockCount = 0;
 }

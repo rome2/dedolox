@@ -129,6 +129,15 @@ public class FaderView extends View {
     scrollView = target;
   }
 
+  public void blockUpdates(boolean block) {
+    if (block)
+      blockCount++;
+    else
+      blockCount--;
+    if (blockCount == 0)
+      invalidate();
+  }
+
   public void setFaderListener(FaderListener listener) {
 
     this.listeners.add(listener);
@@ -140,6 +149,9 @@ public class FaderView extends View {
   }
 
   private void fireValueChanged() {
+
+    if (blockCount != 0)
+      return;
 
     for (FaderListener listener : listeners)
       listener.onValueChanged(value);
@@ -153,4 +165,5 @@ public class FaderView extends View {
   private double value = 0.0;
   private ViewParent scrollView = null;
   private boolean faderDown = false;
+  private int blockCount = 0;
 }

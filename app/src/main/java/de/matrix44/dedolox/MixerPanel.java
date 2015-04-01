@@ -8,15 +8,15 @@ import android.widget.FrameLayout;
 /**
  * Created by rollo on 17.01.15.
  */
-public class MixerPanel extends  SynthPanel {
+public class MixerPanel extends SynthPanel {
 
   public MixerPanel(Context context) {
-    super(context, R.drawable.greenpanel, R.drawable.mixer);
+    super(context, R.drawable.mixer);
     init(context);
   }
 
   public MixerPanel(Context context, AttributeSet attrs) {
-    super(context, R.drawable.greenpanel, R.drawable.mixer);
+    super(context, attrs, R.drawable.mixer);
     init(context);
   }
 
@@ -25,6 +25,43 @@ public class MixerPanel extends  SynthPanel {
     osc2Pot.setScrollView(target);
     noisePot.setScrollView(target);
     ringPot.setScrollView(target);
+  }
+
+  public void midiIn(MIDIEvent event) {
+
+    if (event.message != 0xB0 || event.value2 < 0)
+      return;
+
+    if (event.value1 == MIDIImplementation.CC_OSC1_LEVEL) {
+      osc1Pot.blockUpdates(false);
+      osc1Pot.setValue(event.value2 / 127.0);
+      osc1Pot.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_OSC2_LEVEL) {
+      osc2Pot.blockUpdates(false);
+      osc2Pot.setValue(event.value2 / 127.0);
+      osc2Pot.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_NOISE_LEVEL) {
+      noisePot.blockUpdates(false);
+      noisePot.setValue(event.value2 / 127.0);
+      noisePot.blockUpdates(true);
+    }
+
+    if (event.value1 == MIDIImplementation.CC_RINGMOD_LEVEL) {
+      ringPot.blockUpdates(false);
+      ringPot.setValue(event.value2 / 127.0);
+      ringPot.blockUpdates(true);
+    }
+  }
+
+  public void setPreset(DedoloxPreset preset) {
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC1_LEVEL));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_OSC2_LEVEL));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_NOISE_LEVEL));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_RINGMOD_LEVEL));
   }
 
   private void init(Context context) {
@@ -40,11 +77,11 @@ public class MixerPanel extends  SynthPanel {
 
     osc2Pot = new PotView(context);
     osc2Pot.setPotListener(new PotView.PotListener() {
-        @Override
-        public void onValueChanged(double newVal) {
-          MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC2_LEVEL, (int)(127.0 * newVal));
-        }
-      });
+      @Override
+      public void onValueChanged(double newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC2_LEVEL, (int)(127.0 * newVal));
+      }
+    });
     addView(osc2Pot, new FrameLayout.LayoutParams(100, 100));
 
     noisePot = new PotView(context);
