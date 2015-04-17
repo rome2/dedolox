@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class PotView extends View {
 
   public interface PotListener {
-    void onValueChanged(double newVal);
+    void onValueChanged(float newVal);
   }
 
   public PotView(Context context, AttributeSet attrs) {
@@ -42,7 +42,7 @@ public class PotView extends View {
     if (potMovie != null) {
 
       int csteps = controlSteps - 1;
-      double dval = ((double)((int)(value * csteps))) / csteps;
+      float dval = ((float)((int)(value * csteps))) / csteps;
       int imageNo = (int)(((imageCountX * imageCountY) - 1) * dval);
       int imgWidth  = potMovie.getWidth()  / imageCountX;
       int imgHeight = potMovie.getHeight() / imageCountY;
@@ -108,7 +108,7 @@ public class PotView extends View {
         if (circularMode) {
 
           // Get value from the mouse position point:
-          double val = valueFromMousePos(event.getX(), event.getY());
+          float val = valueFromMousePos(event.getX(), event.getY());
 
           // Set value:
           if (absoluteMode)
@@ -126,10 +126,10 @@ public class PotView extends View {
         // No, we're imitating a fader:
         else {
           // Calc movement in pixels:
-          double dy = startY - event.getY();
+          float dy = startY - event.getY();
 
           // Scale into a more usable range:
-          double diff = dy / linearSize;
+          float diff = dy / linearSize;
 
           // Set new value relative to the start value:
           setValue(startVal + diff);
@@ -140,19 +140,19 @@ public class PotView extends View {
     return true;
   }
 
-  public void setValue(double val) {
+  public void setValue(float val) {
 
-    if (val < 0.0)
-      value = 0.0;
-    else if (val > 1.0)
-      value = 1.0;
+    if (val < 0.0f)
+      value = 0.0f;
+    else if (val > 1.0f)
+      value = 1.0f;
     else
       value = val;
     invalidate();
     fireValueChanged();
   }
 
-  public double getValue() {
+  public float getValue() {
     return value;
   }
 
@@ -187,24 +187,24 @@ public class PotView extends View {
     linearSize  = (int)((float)linearSize * context.getResources().getDisplayMetrics().density);
   }
 
-  private double valueFromMousePos(float mx, float my) {
+  private float valueFromMousePos(float mx, float my) {
 
     // Get coordinates with respect to the control center:
-    double x = (getWidth()  / 2.0) - mx;
-    double y = (getHeight() / 2.0) - my;
+    float x = (getWidth()  / 2.0f) - mx;
+    float y = (getHeight() / 2.0f) - my;
 
     // Normalize the values to get a direction vector:
-    double len = Math.sqrt(x * x + y * y);
+    float len = (float)Math.sqrt(x * x + y * y);
     if (len > 0.0) {
       x /= len;
       y /= len;
 
       // Calc value:
-      double val = Math.acos(y) * (x < 0.0 ? 1.0 : -1.0);
+      float val = (float)Math.acos(y) * (x < 0.0f ? 1.0f : -1.0f);
 
       // Move into range [0,1]:
-      val += 3.14;
-      val /= 6.28;
+      val += 3.14f;
+      val /= 6.28f;
 
       // Return the value:
       return val;
@@ -226,15 +226,15 @@ public class PotView extends View {
   private ArrayList<PotListener> listeners = new ArrayList<PotListener>();
   private boolean circularMode = false;
   private boolean absoluteMode = false;
-  private double startVal = 0.0;
-  private double startY;
+  private float startVal = 0.0f;
+  private float startY = 0.0f;
   private int linearSize = 128;
   private int imageCountX = 0;
   private int imageCountY = 0;
   private int controlSteps = 0;
   private Bitmap potMovie = null;
   private Paint moviePaint = new Paint(0);
-  private double value = 0.0;
+  private float value = 0.0f;
   private ViewParent scrollView = null;
   private boolean knobDown = false;
   private int blockCount = 0;

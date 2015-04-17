@@ -41,7 +41,7 @@ public class FilterPanel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_FILTER_CUTOFF) {
       cutoffPot.blockUpdates(false);
-      cutoffPot.setValue(event.value2 / 127.0);
+      cutoffPot.setValue(event.value2 / 127.0f);
       cutoffPot.blockUpdates(true);
     }
 
@@ -53,7 +53,7 @@ public class FilterPanel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_FILTER_RESONANCE) {
       resonancePot.blockUpdates(false);
-      resonancePot.setValue(event.value2 / 127.0);
+      resonancePot.setValue(event.value2 / 127.0f);
       resonancePot.blockUpdates(true);
     }
   }
@@ -79,8 +79,8 @@ public class FilterPanel extends  SynthPanel {
     cutoffPot = new PotView(context);
     cutoffPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_CUTOFF, (int)(127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_CUTOFF, (int)(127.0f * newVal));
       }
     });
     addView(cutoffPot, new FrameLayout.LayoutParams(100, 100));
@@ -97,8 +97,8 @@ public class FilterPanel extends  SynthPanel {
     resonancePot = new PotView(context);
     resonancePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_RESONANCE, (int)(127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_RESONANCE, (int)(127.0f * newVal));
       }
     });
     addView(resonancePot, new FrameLayout.LayoutParams(100, 100));
@@ -112,37 +112,37 @@ public class FilterPanel extends  SynthPanel {
 
     if (modeSel != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)modeSel.getLayoutParams();
-      params.width      = (int)(0.421875 * width);
-      params.height     = (int)(0.421875 * height);
-      params.leftMargin = (int)(0.060546875 * width);
-      params.topMargin  = (int)(0.069335938 * height);
+      params.width      = (int)(0.421875f * width);
+      params.height     = (int)(0.421875f * height);
+      params.leftMargin = (int)(0.060546875f * width);
+      params.topMargin  = (int)(0.069335938f * height);
       modeSel.setLayoutParams(params);
     }
 
     if (cutoffPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)cutoffPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.110351563 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.110351563f * height);
       cutoffPot.setLayoutParams(params);
     }
 
     if (slopeSel != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)slopeSel.getLayoutParams();
-      params.width      = (int)(0.421875 * width);
-      params.height     = (int)(0.421875 * height);
-      params.leftMargin = (int)(0.060546875 * width);
-      params.topMargin  = (int)(0.5096875 * height);
+      params.width      = (int)(0.421875f * width);
+      params.height     = (int)(0.421875f * height);
+      params.leftMargin = (int)(0.060546875f * width);
+      params.topMargin  = (int)(0.5096875f * height);
       slopeSel.setLayoutParams(params);
     }
 
     if (resonancePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)resonancePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       resonancePot.setLayoutParams(params);
     }
 

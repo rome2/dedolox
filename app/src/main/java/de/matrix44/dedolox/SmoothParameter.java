@@ -51,14 +51,14 @@ public class SmoothParameter {
    *
    * @param initialValue Initial value of the parameter to smooth.
    **/
-  public SmoothParameter(double initialValue) {
+  public SmoothParameter(float initialValue) {
 
     // Init state:
     sampleRate    = 44100;
     smoothedValue = initialValue;
     rawValue      = initialValue;
-    coeff         = 1.0;
-    time          = 0.02;
+    coeff         = 1.0f;
+    time          = 0.02f;
     updateCoefficient();
   }
 
@@ -70,7 +70,7 @@ public class SmoothParameter {
    *
    * @return Returns the current smoothed parameter.
    */
-  public double tick() {
+  public float tick() {
 
     // Filter value:
     smoothedValue = smoothedValue + coeff * (rawValue - smoothedValue);
@@ -117,7 +117,7 @@ public class SmoothParameter {
    *
    * @return Returns the current smoothing time in seconds.
    */
-  public double getTime() {
+  public float getTime() {
 
     // Return current time:
     return time;
@@ -130,7 +130,7 @@ public class SmoothParameter {
    *
    * @param newTime New smoothing time in seconds.
    */
-  public void setTime(double newTime) {
+  public void setTime(float newTime) {
 
     // Update the internal time:
     time = newTime;
@@ -147,7 +147,7 @@ public class SmoothParameter {
    *
    * @return Returns the current raw parameter value.
    */
-  public double getValue() {
+  public float getValue() {
 
     // Return current value:
     return rawValue;
@@ -161,7 +161,7 @@ public class SmoothParameter {
    *
    * @param newValue New target value of this parameter.
    */
-  public void setValue(double newValue) {
+  public void setValue(float newValue) {
 
     // Set new value:
     rawValue = newValue;
@@ -173,21 +173,21 @@ public class SmoothParameter {
   private void updateCoefficient() {
 
     // Recalculate coefficient:
-    coeff = 1.0 - Math.exp(-1.0 / (time * (double)sampleRate));
+    coeff = 1.0f - (float)Math.exp(-1.0f / (time * sampleRate));
   }
 
   /** Current sample rate. */
   private int sampleRate;
 
   /** Current smoothed value. */
-  private double smoothedValue;
+  private float smoothedValue;
 
   /** Current real value. */
-  private double rawValue;
+  private float rawValue;
 
   /** Current filter coefficient. */
-  private double coeff;
+  private float coeff;
 
   /** Smoothing time for the filter. */
-  private double time;
+  private float time;
 }

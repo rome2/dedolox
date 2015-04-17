@@ -20,35 +20,44 @@ package de.matrix44.dedolox;
 public class Tweak {
 
   /** Min times for the envelopes in seconds. */
-  public static final double AHDSR_MIN_TIME = 0.00125;
+  public static final float AHDSR_MIN_TIME = 0.00125f;
 
   /** Max times for the envelopes in seconds. */
-  public static final double AHDSR_MAX_TIME = 2.0;
+  public static final float AHDSR_MAX_TIME = 2.0f;
 
   /** Level epsilon, used for termination of the envelope. */
-  public static final double AHDSR_ENV_THRESHOLD = 0.0005;
+  public static final float AHDSR_ENV_THRESHOLD = 0.0005f;
 
   /** Min LFO speed in hertz: */
-  public static final double LFO_MIN_SPEED = 0.5;
+  public static final float LFO_MIN_SPEED = 0.5f;
 
   /** Max LFO speed in hertz: */
-  public static final double LFO_MAX_SPEED = 25.0;
+  public static final float LFO_MAX_SPEED = 25.0f;
 
   /** Min oscillator speed in hertz: */
-  public static final double OSC_MIN_SPEED = 0.5;
+  public static final float OSC_MIN_SPEED = 0.5f;
 
   /** Max oscillator speed in hertz: */
-  public static final double OSC_MAX_SPEED = 14000.0;
+  public static final float OSC_MAX_SPEED = 14000.0f;
 
   /** Min filter cutoff: */
-  public static final double FILTER_MIN_CUTOFF = 0.01;
+  public static final float FILTER_MIN_CUTOFF = 0.01f;
 
-  /** Max filter frequency in hertz: */
-  public static final double FILTER_MAX_CUTOFF = 0.99;
+  /** Max filter cutoff: */
+  public static final float FILTER_MAX_CUTOFF = 0.99f;
 
   /** Max filter resonance: */
-  public static final double FILTER_MAX_RESONANCE = 1.0;
+  public static final float FILTER_MAX_RESONANCE = 1.0f;
 
   /** Min pulse width: */
-  public static final double OSC_MIN_PW = 0.1;
+  public static final float OSC_MIN_PW = 0.1f;
+
+  /** Min delay time. */
+  public static final float DELAY_MIN_TIME = 0.075f;
+
+  /** Max delay time. */
+  public static final float DELAY_MAX_TIME = 1.2f;
+
+  /** Max delay feedback. */
+  public static final float DELAY_MAX_FEEDBACK = 0.75f;
 }

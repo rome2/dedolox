@@ -40,19 +40,19 @@ public class PhaserPanel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_PHASER_RATE) {
       ratePot.blockUpdates(false);
-      ratePot.setValue(event.value2 / 127.0);
+      ratePot.setValue(event.value2 / 127.0f);
       ratePot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_PHASER_DEPTH) {
       depthPot.blockUpdates(false);
-      depthPot.setValue(event.value2 / 127.0);
+      depthPot.setValue(event.value2 / 127.0f);
       depthPot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_PHASER_FEEDBACK) {
       feedbackPot.blockUpdates(false);
-      feedbackPot.setValue(event.value2 / 127.0);
+      feedbackPot.setValue(event.value2 / 127.0f);
       feedbackPot.blockUpdates(true);
     }
   }
@@ -79,8 +79,8 @@ public class PhaserPanel extends  SynthPanel {
     ratePot.setControlSteps(25);
     ratePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_RATE, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_RATE, (int) (127.0f * newVal));
       }
     });
     addView(ratePot, new FrameLayout.LayoutParams(100, 100));
@@ -88,8 +88,8 @@ public class PhaserPanel extends  SynthPanel {
     depthPot = new PotView(context);
     depthPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_DEPTH, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_DEPTH, (int) (127.0f * newVal));
       }
     });
     addView(depthPot, new FrameLayout.LayoutParams(100, 100));
@@ -97,8 +97,8 @@ public class PhaserPanel extends  SynthPanel {
     feedbackPot = new PotView(context);
     feedbackPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_FEEDBACK, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PHASER_FEEDBACK, (int) (127.0f * newVal));
       }
     });
     addView(feedbackPot, new FrameLayout.LayoutParams(100, 100));
@@ -111,37 +111,37 @@ public class PhaserPanel extends  SynthPanel {
 
     if (onoffSel != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) onoffSel.getLayoutParams();
-      params.width      = (int)(0.421875 * width);
-      params.height     = (int)(0.421875 * height);
-      params.leftMargin = (int)(0.060546875 * width);
-      params.topMargin  = (int)(0.069335938 * height);
+      params.width      = (int)(0.421875f * width);
+      params.height     = (int)(0.421875f * height);
+      params.leftMargin = (int)(0.060546875f * width);
+      params.topMargin  = (int)(0.069335938f * height);
       onoffSel.setLayoutParams(params);
     }
 
     if (ratePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) ratePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.110351563 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.110351563f * height);
       ratePot.setLayoutParams(params);
     }
 
     if (depthPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) depthPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       depthPot.setLayoutParams(params);
     }
 
     if (feedbackPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) feedbackPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.109375 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       feedbackPot.setLayoutParams(params);
     }
 

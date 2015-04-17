@@ -44,7 +44,7 @@ public class FaderView extends View {
       Rect destRect = new Rect();
       getDrawingRect(destRect);
 
-      int y = (int)((1.0 - value) * (destRect.height() - destRect.width()));
+      int y = (int)((1.0f - value) * (destRect.height() - destRect.width()));
       destRect.set(0, y, destRect.width(), destRect.width() + y);
 
       Rect srcRect = new Rect(0, 0, faderHandle.getWidth(), faderHandle.getHeight());
@@ -61,7 +61,7 @@ public class FaderView extends View {
       if (!faderDown) {
         Rect destRect = new Rect();
         getDrawingRect(destRect);
-        int y1 = (int) ((1.0 - value) * (destRect.height() - destRect.width()));
+        int y1 = (int) ((1.0f - value) * (destRect.height() - destRect.width()));
         int y2 = destRect.width() + y1;
         if (event.getY() > y1 && event.getY() < y2)
           faderDown = true;
@@ -91,15 +91,15 @@ public class FaderView extends View {
       if (faderDown) {
 
         // Calc movement in pixels:
-        double dy = startY - event.getY();
+        float dy = startY - event.getY();
 
         // Get movable range:
         Rect destRect = new Rect();
         getDrawingRect(destRect);
-        double linearSize = destRect.height() - destRect.width();
+        float linearSize = destRect.height() - destRect.width();
 
         // Scale into pixel range:
-        double diff = dy / linearSize;
+        float diff = dy / linearSize;
 
         // Set new value relative to the start value:
         setValue(startVal + diff);
@@ -109,19 +109,19 @@ public class FaderView extends View {
     return true;
   }
 
-  public void setValue(double val) {
+  public void setValue(float val) {
 
-    if (val < 0.0)
-      value = 0.0;
-    else if (val > 1.0)
-      value = 1.0;
+    if (val < 0.0f)
+      value = 0.0f;
+    else if (val > 1.0f)
+      value = 1.0f;
     else
       value = val;
     invalidate();
     fireValueChanged();
   }
 
-  public double getValue() {
+  public float getValue() {
     return value;
   }
 
@@ -158,11 +158,11 @@ public class FaderView extends View {
   }
 
   private ArrayList<FaderListener> listeners = new ArrayList<FaderListener>();
-  private double startVal = 0.0;
-  private double startY;
+  private float startVal = 0.0f;
+  private float startY = 0.0f;
   private Bitmap faderHandle = null;
   private Paint faderPaint = new Paint(0);
-  private double value = 0.0;
+  private float value = 0.0f;
   private ViewParent scrollView = null;
   private boolean faderDown = false;
   private int blockCount = 0;

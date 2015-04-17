@@ -34,25 +34,25 @@ public class AmpEnvPanel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_AMPENV_ATTACK) {
       attackFader.blockUpdates(false);
-      attackFader.setValue(event.value2 / 127.0);
+      attackFader.setValue(event.value2 / 127.0f);
       attackFader.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_AMPENV_DECAY) {
       decayFader.blockUpdates(false);
-      decayFader.setValue(event.value2 / 127.0);
+      decayFader.setValue(event.value2 / 127.0f);
       decayFader.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_AMPENV_SUSTAIN) {
       sustainFader.blockUpdates(false);
-      sustainFader.setValue(event.value2 / 127.0);
+      sustainFader.setValue(event.value2 / 127.0f);
       sustainFader.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_AMPENV_RELEASE) {
       releaseFader.blockUpdates(false);
-      releaseFader.setValue(event.value2 / 127.0);
+      releaseFader.setValue(event.value2 / 127.0f);
       releaseFader.blockUpdates(true);
     }
   }
@@ -70,7 +70,7 @@ public class AmpEnvPanel extends  SynthPanel {
     attackFader.setFaderListener(new FaderView.FaderListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_ATTACK, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_ATTACK, (int)(127.0f * newVal));
       }
     });
     addView(attackFader, new FrameLayout.LayoutParams(100, 100));
@@ -79,7 +79,7 @@ public class AmpEnvPanel extends  SynthPanel {
     decayFader.setFaderListener(new FaderView.FaderListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_DECAY, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_DECAY, (int)(127.0f * newVal));
       }
     });
     addView(decayFader, new FrameLayout.LayoutParams(100, 100));
@@ -88,7 +88,7 @@ public class AmpEnvPanel extends  SynthPanel {
     sustainFader.setFaderListener(new FaderView.FaderListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_SUSTAIN, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_SUSTAIN, (int)(127.0f * newVal));
       }
     });
     addView(sustainFader, new FrameLayout.LayoutParams(100, 100));
@@ -97,7 +97,7 @@ public class AmpEnvPanel extends  SynthPanel {
     releaseFader.setFaderListener(new FaderView.FaderListener() {
       @Override
       public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_RELEASE, (int)(127.0 * newVal));
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_AMPENV_RELEASE, (int)(127.0f * newVal));
       }
     });
     addView(releaseFader, new FrameLayout.LayoutParams(100, 100));
@@ -111,37 +111,37 @@ public class AmpEnvPanel extends  SynthPanel {
 
     if (attackFader != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)attackFader.getLayoutParams();
-      params.width      = (int)(0.208984375 * width);
-      params.height     = (int)(0.734375 * height);
-      params.leftMargin = (int)(0.078125 * width);
-      params.topMargin  = (int)(0.134765625 * height);
+      params.width      = (int)(0.208984375f * width);
+      params.height     = (int)(0.734375f * height);
+      params.leftMargin = (int)(0.078125f * width);
+      params.topMargin  = (int)(0.134765625f * height);
       attackFader.setLayoutParams(params);
     }
 
     if (decayFader != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)decayFader.getLayoutParams();
-      params.width      = (int)(0.208984375 * width);
-      params.height     = (int)(0.734375 * height);
-      params.leftMargin = (int)(0.287109375 * width);
-      params.topMargin  = (int)(0.134765625 * height);
+      params.width      = (int)(0.208984375f * width);
+      params.height     = (int)(0.734375f * height);
+      params.leftMargin = (int)(0.287109375f * width);
+      params.topMargin  = (int)(0.134765625f * height);
       decayFader.setLayoutParams(params);
     }
 
     if (sustainFader != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)sustainFader.getLayoutParams();
-      params.width      = (int)(0.208984375 * width);
-      params.height     = (int)(0.734375 * height);
-      params.leftMargin = (int)(0.49609375 * width);
-      params.topMargin  = (int)(0.134765625 * height);
+      params.width      = (int)(0.208984375f * width);
+      params.height     = (int)(0.734375f * height);
+      params.leftMargin = (int)(0.49609375f * width);
+      params.topMargin  = (int)(0.134765625f * height);
       sustainFader.setLayoutParams(params);
     }
 
     if (releaseFader != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)releaseFader.getLayoutParams();
-      params.width      = (int)(0.208984375 * width);
-      params.height     = (int)(0.734375 * height);
-      params.leftMargin = (int)(0.705078125 * width);
-      params.topMargin  = (int)(0.134765625 * height);
+      params.width      = (int)(0.208984375f * width);
+      params.height     = (int)(0.734375f * height);
+      params.leftMargin = (int)(0.705078125f * width);
+      params.topMargin  = (int)(0.134765625f * height);
       releaseFader.setLayoutParams(params);
     }
 

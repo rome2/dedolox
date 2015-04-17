@@ -57,7 +57,7 @@ public class LFO {
    *
    * @return Returns the current frequency in hertz.
    */
-  public double getFrequency() {
+  public float getFrequency() {
 
     // Return current frequency:
     return frequency.getValue();
@@ -68,7 +68,7 @@ public class LFO {
    *
    * @param newFrequency The new frequency of this oscillator.
    */
-  public void setFrequency(double newFrequency) {
+  public void setFrequency(float newFrequency) {
 
     // Check frequency:
     if (newFrequency < Tweak.LFO_MIN_SPEED)
@@ -107,18 +107,18 @@ public class LFO {
    *
    * @return The next sample of this oscillator.
    */
-  public double tick() {
+  public float tick() {
 
-    double retval = 0.0;
+    float retval = 0.0f;
 
     if (waveForm == WaveForm.SINE)
-      retval = Math.sin(omega);
+      retval = (float)Math.sin(omega);
     else if (waveForm == WaveForm.TRIANGLE)
-      retval = (omega < Math.PI ? omega / Math.PI : (tau - omega) / Math.PI) * 2.0 - 1.0;
+      retval = (omega < pi ? omega / pi : (tau - omega) / pi) * 2.0f - 1.0f;
     else if (waveForm == WaveForm.SAW)
-      retval = (tau - omega) / tau * 2.0 - 1.0;
+      retval = (tau - omega) / tau * 2.0f - 1.0f;
     else if (waveForm == WaveForm.RECT)
-      retval = omega < Math.PI ? -1.0 : 1.0;
+      retval = omega < pi ? -1.0f : 1.0f;
 
     omega += tau * frequency.tick() / sampleRate;
     if (omega > tau)
@@ -127,14 +127,17 @@ public class LFO {
     return retval;
   }
 
+  /** One pi. */
+  private static final float pi = (float)Math.PI;
+
   /** Well, two pies... */
-  private static final double tau = Math.PI * 2.0;
+  private static final float tau = (float)(Math.PI * 2.0);
 
   /** The sample rate of the system (in samples / second). */
   private int sampleRate;
 
   /** Current oscillator phase. */
-  private double omega = 0.0;
+  private float omega = 0.0f;
 
   /** Waveform of this oscillator. */
   private WaveForm waveForm = WaveForm.SAW;

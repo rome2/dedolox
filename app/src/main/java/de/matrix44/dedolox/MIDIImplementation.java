@@ -70,20 +70,8 @@ public final class MIDIImplementation {
   /** LFO 2 pulse width modulation. */
   public static final int CC_LFO2_PULSE = 25;
 
-  /** Distortion on/off (0 = off, 1 = on). */
-  public static final int CC_DISTORTION_ENABLE = 26;
-
-  /** Distortion gain. */
-  public static final int CC_DISTORTION_GAIN = 27;
-
-  /** Distortion tone. */
-  public static final int CC_DISTORTION_TONE = 28;
-
-  /** Distortion volume. */
-  public static final int CC_DISTORTION_VOLUME = 29;
-
   /** Velocity sensitivity. */
-  public static final int CC_VELOCITY_SENS = 30;
+  public static final int CC_VELOCITY_SENS = 26;
 
   // [...]
   // 31
@@ -192,8 +180,8 @@ public final class MIDIImplementation {
   /** Noise level. */
   public static final int CC_NOISE_LEVEL = 103;
 
-  /** Ringmod level. */
-  public static final int CC_RINGMOD_LEVEL = 104;
+  /** Oscillator drive. */
+  public static final int CC_MIXER_DRIVE = 104;
 
   /** Phaser on/off (0 = off, 1 = on) */
   public static final int CC_PHASER_ENABLE = 105;

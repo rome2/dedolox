@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 /**
  * Created by rollo on 26.03.15.
  */
-public class DelayPanel extends  SynthPanel {
+public class DelayPanel extends SynthPanel {
 
   public DelayPanel(Context context) {
     super(context, R.drawable.delay);
@@ -40,19 +40,19 @@ public class DelayPanel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_DELAY_TIME) {
       timePot.blockUpdates(false);
-      timePot.setValue(event.value2 / 127.0);
+      timePot.setValue(event.value2 / 127.0f);
       timePot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_DELAY_FEEDBACK) {
       feedbackPot.blockUpdates(false);
-      feedbackPot.setValue(event.value2 / 127.0);
+      feedbackPot.setValue(event.value2 / 127.0f);
       feedbackPot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_DELAY_MIX) {
       mixPot.blockUpdates(false);
-      mixPot.setValue(event.value2 / 127.0);
+      mixPot.setValue(event.value2 / 127.0f);
       mixPot.blockUpdates(true);
     }
   }
@@ -79,8 +79,8 @@ public class DelayPanel extends  SynthPanel {
     timePot.setControlSteps(25);
     timePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_TIME, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_TIME, (int) (127.0f * newVal));
       }
     });
     addView(timePot, new FrameLayout.LayoutParams(100, 100));
@@ -88,8 +88,8 @@ public class DelayPanel extends  SynthPanel {
     feedbackPot = new PotView(context);
     feedbackPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_FEEDBACK, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_FEEDBACK, (int) (127.0f * newVal));
       }
     });
     addView(feedbackPot, new FrameLayout.LayoutParams(100, 100));
@@ -97,8 +97,8 @@ public class DelayPanel extends  SynthPanel {
     mixPot = new PotView(context);
     mixPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_MIX, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_DELAY_MIX, (int) (127.0f * newVal));
       }
     });
     addView(mixPot, new FrameLayout.LayoutParams(100, 100));
@@ -111,38 +111,38 @@ public class DelayPanel extends  SynthPanel {
 
     if (onoffSel != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) onoffSel.getLayoutParams();
-      params.width      = (int)(0.421875 * width);
-      params.height     = (int)(0.421875 * height);
-      params.leftMargin = (int)(0.060546875 * width);
-      params.topMargin  = (int)(0.069335938 * height);
+      params.width      = (int)(0.421875f * width);
+      params.height     = (int)(0.421875f * height);
+      params.leftMargin = (int)(0.060546875f * width);
+      params.topMargin  = (int)(0.069335938f * height);
       onoffSel.setLayoutParams(params);
     }
 
     if (timePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) timePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.110351563 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.110351563f * height);
       timePot.setLayoutParams(params);
-    }
-
-    if (feedbackPot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) feedbackPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.5546875 * height);
-      feedbackPot.setLayoutParams(params);
     }
 
     if (mixPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mixPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.109375 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       mixPot.setLayoutParams(params);
+    }
+
+    if (feedbackPot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) feedbackPot.getLayoutParams();
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
+      feedbackPot.setLayoutParams(params);
     }
 
     super.onLayout(changed, left, top, right, bottom);

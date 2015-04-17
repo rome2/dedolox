@@ -29,12 +29,12 @@ public class AHDSREnvelope {
   public AHDSREnvelope() {
 
     // Calc initial sample length:
-    timeIncrement = 1.0 / sampleRate;
+    timeIncrement = 1.0f / sampleRate;
 
     // Initialize filter values:
-    setAttackTime(attackTime.getValue());
-    setDecayTime(decayTime.getValue());
-    setReleaseTime(releaseTime.getValue());
+    setAttackTime(attackTime);
+    setDecayTime(decayTime);
+    setReleaseTime(releaseTime);
   }
 
   /**
@@ -63,22 +63,7 @@ public class AHDSREnvelope {
       sampleRate = newSampleRate;
 
     // Recalculate sample length:
-    timeIncrement = 1.0 / (double)sampleRate;
-
-    // Update parameters:
-    attackTime.setSampleRate(newSampleRate);
-    holdTime.setSampleRate(newSampleRate);
-    decayTime.setSampleRate(newSampleRate);
-    sustainLevel.setSampleRate(newSampleRate);
-    releaseTime.setSampleRate(newSampleRate);
-    attackCoeff.setSampleRate(newSampleRate);
-    decayCoeff.setSampleRate(newSampleRate);
-    releaseCoeff.setSampleRate(newSampleRate);
-
-    // Update envelope filters:
-    setAttackTime(attackTime.getValue());
-    setDecayTime(decayTime.getValue());
-    setReleaseTime(releaseTime.getValue());
+    timeIncrement = 1.0f / sampleRate;
   }
 
   /**
@@ -86,10 +71,10 @@ public class AHDSREnvelope {
    *
    * @return  Returns the attack hold time in seconds.
    */
-  public double getAttackTime() {
+  public float getAttackTime() {
 
     // Return current attack time:
-    return attackTime.getValue();
+    return attackTime;
   }
 
   /**
@@ -100,17 +85,18 @@ public class AHDSREnvelope {
    *
    * @param newAttackTime The new time in seconds.
    */
-  public void setAttackTime(double newAttackTime) {
+  public void setAttackTime(float newAttackTime) {
 
-    // Check attack time:
+    // Set clipped value:
     if (newAttackTime < Tweak.AHDSR_MIN_TIME)
-      newAttackTime = Tweak.AHDSR_MIN_TIME;
+      attackTime = Tweak.AHDSR_MIN_TIME;
     else if (newAttackTime > Tweak.AHDSR_MAX_TIME)
-      newAttackTime = Tweak.AHDSR_MAX_TIME;
+      attackTime = Tweak.AHDSR_MAX_TIME;
+    else
+      attackTime  = newAttackTime;
 
     // Recalculate attack filter coefficient:
-    attackTime.setValue(newAttackTime);
-    attackCoeff.setValue(1.0 - Math.exp(-1.0 / ((double)sampleRate * newAttackTime)));
+    attackCoeff = 1.0f - (float)Math.exp(-1.0f / (attackTime * sampleRate));
   }
 
   /**
@@ -118,10 +104,10 @@ public class AHDSREnvelope {
    *
    * @return Returns the current hold time in seconds.
    */
-  public double getHoldTime() {
+  public float getHoldTime() {
 
     // Return current hold time:
-    return holdTime.getValue();
+    return holdTime;
   }
 
   /**
@@ -132,15 +118,15 @@ public class AHDSREnvelope {
    *
    * @param newHoldTime The new time in seconds.
    */
-  public void setHoldTime(double newHoldTime)
+  public void setHoldTime(float newHoldTime)
   {
     // Set clipped value:
     if (newHoldTime < Tweak.AHDSR_MIN_TIME)
-      holdTime.setValue(Tweak.AHDSR_MIN_TIME);
+      holdTime = Tweak.AHDSR_MIN_TIME;
     else if (newHoldTime > Tweak.AHDSR_MAX_TIME)
-      holdTime.setValue(Tweak.AHDSR_MAX_TIME);
+      holdTime = Tweak.AHDSR_MAX_TIME;
     else
-      holdTime.setValue(newHoldTime);
+      holdTime = newHoldTime;
   }
 
   /**
@@ -148,10 +134,10 @@ public class AHDSREnvelope {
    *
    * @return Returns the current decay time in seconds.
    */
-  public double getDecayTime() {
+  public float getDecayTime() {
 
     // Return current decay time:
-    return decayTime.getValue();
+    return decayTime;
   }
 
   /**
@@ -163,17 +149,18 @@ public class AHDSREnvelope {
    *
    * @param newDecayTime The new decay time in seconds.
    */
-  public void setDecayTime(double newDecayTime) {
+  public void setDecayTime(float newDecayTime) {
 
-    // Check decay time:
+    // Set clipped value:
     if (newDecayTime < Tweak.AHDSR_MIN_TIME)
-      newDecayTime = Tweak.AHDSR_MIN_TIME;
+      decayTime = Tweak.AHDSR_MIN_TIME;
     else if (newDecayTime > Tweak.AHDSR_MAX_TIME)
-      newDecayTime = Tweak.AHDSR_MAX_TIME;
+      decayTime = Tweak.AHDSR_MAX_TIME;
+    else
+      decayTime  = newDecayTime;
 
     // Recalculate decay filter coefficient:
-    decayTime.setValue(newDecayTime);
-    decayCoeff.setValue(1.0 - Math.exp(-1.0 / ((double)sampleRate * newDecayTime * 0.2)));
+    decayCoeff = 1.0f - (float)Math.exp(-1.0f / (decayTime * 0.2f * sampleRate));
   }
 
   /**
@@ -181,10 +168,10 @@ public class AHDSREnvelope {
    *
    * @return Returns the current level in percent.
    */
-  public double getSustainLevel() {
+  public float getSustainLevel() {
 
     // Return current sustain level:
-    return sustainLevel.getValue();
+    return sustainLevel;
   }
 
   /**
@@ -196,15 +183,15 @@ public class AHDSREnvelope {
    *
    * @param newSustainLevel The new sustain level in percent.
    */
-  public void setSustainLevel(double newSustainLevel) {
+  public void setSustainLevel(float newSustainLevel) {
 
-    // Clip value:
-    if (newSustainLevel < 0.0)
-      sustainLevel.setValue(0.0);
-    else if (newSustainLevel > 1.0)
-      sustainLevel.setValue(1.0);
+    // Set clipped value:
+    if (newSustainLevel < 0.0f)
+      sustainLevel = 0.0f;
+    else if (newSustainLevel > 1.0f)
+      sustainLevel = 1.0f;
     else
-      sustainLevel.setValue(newSustainLevel);
+      sustainLevel = newSustainLevel;
   }
 
   /**
@@ -212,10 +199,10 @@ public class AHDSREnvelope {
    *
    * @return Returns the current release time in seconds.
    */
-  public double getReleaseTime() {
+  public float getReleaseTime() {
 
     // Return current release time:
-    return releaseTime.getValue();
+    return releaseTime;
   }
 
   /**
@@ -227,17 +214,18 @@ public class AHDSREnvelope {
    *
    * @param newReleaseTime The new release time in seconds.
    */
-  public void setReleaseTime(double newReleaseTime) {
+  public void setReleaseTime(float newReleaseTime) {
 
-    // Check release time:
+    // Set clipped value:
     if (newReleaseTime < Tweak.AHDSR_MIN_TIME)
-      newReleaseTime = Tweak.AHDSR_MIN_TIME;
+      releaseTime = Tweak.AHDSR_MIN_TIME;
     else if (newReleaseTime > Tweak.AHDSR_MAX_TIME)
-      newReleaseTime = Tweak.AHDSR_MAX_TIME;
+      releaseTime = Tweak.AHDSR_MAX_TIME;
+    else
+      releaseTime = newReleaseTime;
 
     // Recalculate release filter coefficient:
-    releaseTime.setValue(newReleaseTime);
-    releaseCoeff.setValue(1.0 - Math.exp(-1.0 / ((double)sampleRate * newReleaseTime * 0.2)));
+    releaseCoeff = 1.0f - (float)Math.exp(-1.0f / (releaseTime * 0.2f * sampleRate));
   }
 
   /**
@@ -276,7 +264,7 @@ public class AHDSREnvelope {
   public void setGateOn() {
 
     // Reset time:
-    currentTime = 0.0;
+    currentTime = 0.0f;
 
     // Turn on gate:
     gateOn = true;
@@ -302,7 +290,7 @@ public class AHDSREnvelope {
       currentStage = EnvelopeStage.RELEASE;
 
     // Move current time stamp into the sustain/release phase:
-    currentTime = attackTime.getValue() + holdTime.getValue() + decayTime.getValue() + timeIncrement;
+    currentTime = attackTime + holdTime + decayTime + timeIncrement;
   }
 
   /**
@@ -313,13 +301,13 @@ public class AHDSREnvelope {
   public void reset() {
 
     // Set time to start of the envelope:
-    currentTime = 0.0;
+    currentTime = 0.0f;
 
     // Start with a new attack:
     currentStage = EnvelopeStage.ATTACK;
 
     // Clear filter value:
-    lastSample = 0.0;
+    lastSample = 0.0f;
   }
 
   /**
@@ -329,81 +317,82 @@ public class AHDSREnvelope {
    *
    * @return Returns the envelope value at the current time and stage.
    */
-  public double tick() {
+  public float tick() {
 
-    // Tick parameters:
-    releaseTime.tick();
-    double at = attackTime.tick();
-    double ht = holdTime.tick();
-    double dt = decayTime.tick();
-    double sl = sustainLevel.tick();
-    double ac = attackCoeff.tick();
-    double dc = decayCoeff.tick();
-    double rc = releaseCoeff.tick();
+    // Get value:
+    float result = 0.0f;
+    switch (currentStage) {
 
-    // Done?
-    if (currentStage == EnvelopeStage.OFF)
-      return 0.0;
+      // Attack stage?
+      case ATTACK:
 
-    double result = 0.0;
+        // Get filter value:
+        result = lastSample + attackCoeff * ((1.0f / 0.633f) - lastSample);
 
-    // Attack stage?
-    if (currentStage == EnvelopeStage.ATTACK) {
+        // Next stage?
+        if (currentTime > attackTime)
+          currentStage = EnvelopeStage.HOLD;
 
-      // Get filter value:
-      result = lastSample + ac * ((1.0 / 0.633) - lastSample);
+        break;
 
-      // Advance to next sample:
-      currentTime += timeIncrement;
-      if (currentTime > at)
-        currentStage = EnvelopeStage.HOLD;
+      // Hold stage?
+      case HOLD:
+
+        // Hold the last known value:
+        result = lastSample;
+
+        // Next stage?
+        if (currentTime > (attackTime + holdTime))
+          currentStage = EnvelopeStage.DECAY;
+
+        break;
+
+      // Decay stage?
+      case DECAY:
+
+        // Get filter value:
+        result = lastSample + decayCoeff * (sustainLevel - lastSample);
+
+        // Next stage?
+        if (currentTime > (attackTime + holdTime + decayTime))
+          currentStage = EnvelopeStage.SUSTAIN;
+
+        break;
+
+      // Sustain stage?
+      case SUSTAIN:
+
+        // Just hold the sustain value:
+        result = lastSample;
+
+        // Key released?
+        if (!gateOn)
+          currentStage = EnvelopeStage.RELEASE;
+
+        break;
+
+      // Release stage?
+      case RELEASE:
+
+        // Get filter value:
+        result = lastSample + releaseCoeff * (-lastSample);
+
+        // Terminated?
+        if (lastSample < Tweak.AHDSR_ENV_THRESHOLD)
+          currentStage = EnvelopeStage.OFF;
+
+        break;
+
+      // Done?
+      case OFF:
+
+        // Envelope has finished:
+        result = 0.0f;
+        break;
     }
 
-    // Hold stage?
-    else if (currentStage == EnvelopeStage.HOLD) {
-
-      // Hold the last known value:
-      result = lastSample;
-
-      // Advance to next sample:
-      currentTime += timeIncrement;
-      if (currentTime > (at + ht))
-        currentStage = EnvelopeStage.DECAY;
-    }
-
-    // Decay stage?
-    else if (currentStage == EnvelopeStage.DECAY) {
-
-      // Get filter value:
-      result = lastSample + dc * (sl - lastSample);
-
-      // Advance to next sample:
-      currentTime += timeIncrement;
-      if (currentTime > (at + ht + dt))
-        currentStage = EnvelopeStage.SUSTAIN;
-    }
-
-    // Sustain stage?
-    else if (currentStage == EnvelopeStage.SUSTAIN) {
-
-      // Just hold the sustain value:
-      result = lastSample;
-
-      // Key released?
-      if (!gateOn)
-        currentStage = EnvelopeStage.RELEASE;
-    }
-
-    // Release stage?
-    else if (currentStage == EnvelopeStage.RELEASE) {
-
-      // Get filter value:
-      result = lastSample + rc * (-lastSample);
-
-      // Terminated?
-      if (lastSample < Tweak.AHDSR_ENV_THRESHOLD)
-        currentStage = EnvelopeStage.OFF;
-    }
+    // Advance to next sample position:
+    currentTime += timeIncrement;
 
     // Store value for next round:
     lastSample = result;
@@ -422,38 +411,38 @@ public class AHDSREnvelope {
   private int sampleRate = 44100;
 
   /** The attack time of this envelope (in seconds). */
-  private final SmoothParameter attackTime = new SmoothParameter(Tweak.AHDSR_MIN_TIME);
+  private float attackTime = Tweak.AHDSR_MIN_TIME;
 
   /** The hold time of this envelope (in seconds). */
-  private final SmoothParameter holdTime = new SmoothParameter(Tweak.AHDSR_MIN_TIME);
+  private float holdTime = Tweak.AHDSR_MIN_TIME;
 
   /** The decay time of this envelope (in seconds). */
-  private final SmoothParameter decayTime = new SmoothParameter(Tweak.AHDSR_MIN_TIME);
+  private float decayTime = Tweak.AHDSR_MIN_TIME;
 
   /** The sustain level of this envelope (in percent). */
-  private final SmoothParameter sustainLevel = new SmoothParameter(0.0);
+  private float sustainLevel = 0.0f;
 
   /** The attack time of this envelope (in seconds). */
-  private final SmoothParameter releaseTime = new SmoothParameter(Tweak.AHDSR_MIN_TIME);
+  private float releaseTime = Tweak.AHDSR_MIN_TIME;
 
   /** Current state of the gate (on /off). */
   private boolean gateOn = false;
 
   /** Current time off the envelope (in seconds). */
-  private double currentTime = 1.0e30;
+  private float currentTime = 0.0f;
 
   /** Length of a sample (in seconds). */
-  private double timeIncrement = 0.0;
+  private float timeIncrement = 0.0f;
 
   /** Temp variable to preserve the last filter sample. */
-  private double lastSample = 0.0;
+  private float lastSample = 0.0f;
 
   /** Coefficient for the attack filter. */
-  private final SmoothParameter attackCoeff = new SmoothParameter(1.0);
+  private float attackCoeff = 0.0f;
 
   /** Coefficient for the decay filter. */
-  private final SmoothParameter decayCoeff = new SmoothParameter(1.0);
+  private float decayCoeff = 0.0f;
 
   /** Coefficient for the release filter. */
-  private final SmoothParameter releaseCoeff = new SmoothParameter(1.0);
+  private float releaseCoeff = 0.0f;
 }

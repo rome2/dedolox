@@ -28,10 +28,10 @@ public class ResonantFilter {
    * Initializes temp variables.
    */
   public ResonantFilter() {
-    buffer[0] = 0.0;
-    buffer[1] = 0.0;
-    buffer[2] = 0.0;
-    buffer[3] = 0.0;
+    buffer[0] = 0.0f;
+    buffer[1] = 0.0f;
+    buffer[2] = 0.0f;
+    buffer[3] = 0.0f;
   }
 
   /**
@@ -90,10 +90,10 @@ public class ResonantFilter {
     mode = newMode;
 
     // Clear filter:
-    buffer[0] = 0.0;
-    buffer[1] = 0.0;
-    buffer[2] = 0.0;
-    buffer[3] = 0.0;
+    buffer[0] = 0.0f;
+    buffer[1] = 0.0f;
+    buffer[2] = 0.0f;
+    buffer[3] = 0.0f;
   }
 
   /**
@@ -122,10 +122,10 @@ public class ResonantFilter {
     slope = newSlope;
 
     // Clear filter:
-    buffer[0] = 0.0;
-    buffer[1] = 0.0;
-    buffer[2] = 0.0;
-    buffer[3] = 0.0;
+    buffer[0] = 0.0f;
+    buffer[1] = 0.0f;
+    buffer[2] = 0.0f;
+    buffer[3] = 0.0f;
   }
 
   /**
@@ -133,7 +133,7 @@ public class ResonantFilter {
    *
    * @return Returns the current cutoff.
    */
-  public double getCutoff() {
+  public float getCutoff() {
 
     // Return current cutoff:
     return cutoff.getValue();
@@ -144,7 +144,7 @@ public class ResonantFilter {
    *
    * @param newFrequency The new cutoff of this filter.
    */
-  public void setCutoff(double newFrequency) {
+  public void setCutoff(float newFrequency) {
 
     // Check cutoff:
     if (newFrequency < Tweak.FILTER_MIN_CUTOFF)
@@ -161,7 +161,7 @@ public class ResonantFilter {
    *
    * @return Returns the current resonance.
    */
-  public double getResonance() {
+  public float getResonance() {
 
     // Return current resonance:
     return resonance.getValue();
@@ -172,11 +172,11 @@ public class ResonantFilter {
    *
    * @param newResonance The new resonance of this filter.
    */
-  public void setResonance(double newResonance) {
+  public void setResonance(float newResonance) {
 
     // Check resonance:
-    if (newResonance < 0.0)
-      newResonance = 0.0;
+    if (newResonance < 0.0f)
+      newResonance = 0.0f;
     else if (newResonance > Tweak.FILTER_MAX_RESONANCE)
       newResonance = Tweak.FILTER_MAX_RESONANCE;
 
@@ -190,22 +190,22 @@ public class ResonantFilter {
    * @param input The input value.
    * @return Returns the filtered value.
    */
-  public double tick(double input) {
+  public float tick(float input) {
 
-    double f = cutoff.tick();
-    double fb = resonance.tick() * (1.0 - 0.15 * f * f) * 4.0;
+    float f = cutoff.tick();
+    float fb = resonance.tick() * (1.0f - 0.15f * f * f) * 4.0f;
 
-    double x = input - buffer[4] * fb;
-    x *= 0.35013 * (f * f) * (f * f);
+    float x = input - buffer[4] * fb;
+    x *= 0.35013f * (f * f) * (f * f);
 
     // Four cascaded one pole filters:
-    double y1 =  x + 0.3 * buffer[0] + (1.0 - f) * buffer[1];
-    double y2 = y1 + 0.3 * buffer[1] + (1.0 - f) * buffer[2];
-    double y3 = y2 + 0.3 * buffer[2] + (1.0 - f) * buffer[3];
-    double y4 = y3 + 0.3 * buffer[3] + (1.0 - f) * buffer[4];
+    float y1 =  x + 0.3f * buffer[0] + (1.0f - f) * buffer[1];
+    float y2 = y1 + 0.3f * buffer[1] + (1.0f - f) * buffer[2];
+    float y3 = y2 + 0.3f * buffer[2] + (1.0f - f) * buffer[3];
+    float y4 = y3 + 0.3f * buffer[3] + (1.0f - f) * buffer[4];
 
     // Clipper (band limited sigmoid):
-    y4 = y4 - (y4 * y4 * y4) / 6.0;
+    y4 = y4 - (y4 * y4 * y4) / 6.0f;
 
     // Store temporary values:
     buffer[0] =  x;
@@ -276,8 +276,8 @@ public class ResonantFilter {
   private final SmoothParameter cutoff = new SmoothParameter(Tweak.FILTER_MAX_CUTOFF);
 
   /** Resonance of this filter. */
-  private final SmoothParameter resonance = new SmoothParameter(0.0);
+  private final SmoothParameter resonance = new SmoothParameter(0.0f);
 
   /** Temporary buffer for filtered values. */
-  private final double[] buffer = new double[5];
+  private final float[] buffer = new float[5];
 }

@@ -84,13 +84,6 @@
             <view
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                class="de.matrix44.dedolox.DistortionPanel"
-                android:id="@+id/distortionpanel"
-                android:layout_gravity="center_vertical"/>
-
-            <view
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 class="de.matrix44.dedolox.PhaserPanel"
                 android:id="@+id/phaserpanel"
                 android:layout_gravity="center_vertical"/>

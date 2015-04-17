@@ -33,19 +33,19 @@ public class MasterPanel extends SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_PORTAMENTO_TIME) {
       portamentoPot.blockUpdates(false);
-      portamentoPot.setValue(event.value2 / 127.0);
+      portamentoPot.setValue(event.value2 / 127.0f);
       portamentoPot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_VELOCITY_SENS) {
       velocityPot.blockUpdates(false);
-      velocityPot.setValue(event.value2 / 127.0);
+      velocityPot.setValue(event.value2 / 127.0f);
       velocityPot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_MASTER_VOL) {
       masterPot.blockUpdates(false);
-      masterPot.setValue(event.value2 / 127.0);
+      masterPot.setValue(event.value2 / 127.0f);
       masterPot.blockUpdates(true);
     }
   }
@@ -61,8 +61,8 @@ public class MasterPanel extends SynthPanel {
     portamentoPot = new PotView(context);
     portamentoPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PORTAMENTO_TIME, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_PORTAMENTO_TIME, (int) (127.0f * newVal));
       }
     });
     addView(portamentoPot, new FrameLayout.LayoutParams(100, 100));
@@ -70,8 +70,8 @@ public class MasterPanel extends SynthPanel {
     velocityPot = new PotView(context);
     velocityPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_VELOCITY_SENS, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_VELOCITY_SENS, (int) (127.0f * newVal));
       }
     });
     addView(velocityPot, new FrameLayout.LayoutParams(100, 100));
@@ -79,8 +79,8 @@ public class MasterPanel extends SynthPanel {
     masterPot = new PotView(context);
     masterPot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_MASTER_VOL, (int) (127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_MASTER_VOL, (int) (127.0f * newVal));
       }
     });
     addView(masterPot, new FrameLayout.LayoutParams(100, 100));
@@ -94,28 +94,28 @@ public class MasterPanel extends SynthPanel {
 
     if (portamentoPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) portamentoPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.109375 * width);
-      params.topMargin  = (int)(0.110351563 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.110351563f * height);
       portamentoPot.setLayoutParams(params);
     }
 
     if (masterPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) masterPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       masterPot.setLayoutParams(params);
     }
 
     if (velocityPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) velocityPot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.109375 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       velocityPot.setLayoutParams(params);
     }
 

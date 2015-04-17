@@ -188,8 +188,8 @@ class MainAudioThread extends Thread {
 
     // Create audio buffers:
     short[] samples = new short[bufferSize * 2];
-    double[] bufferLeft = new double[bufferSize];
-    double[] bufferRight = new double[bufferSize];
+    float[] bufferLeft = new float[bufferSize];
+    float[] bufferRight = new float[bufferSize];
 
     // Create and init our synth:
     synth = new DedoloxSynth();
@@ -235,8 +235,8 @@ class MainAudioThread extends Thread {
 
       // Interlace data:
       for (int i = 0, t = 0; i < bufferSize; i++) {
-        samples[t++] = (short)(32767.0 * bufferLeft[i]);
-        samples[t++] = (short)(32767.0 * bufferRight[i]);
+        samples[t++] = (short)(32767.0f * bufferLeft[i]);
+        samples[t++] = (short)(32767.0f * bufferRight[i]);
       }
 
       // Write to device:

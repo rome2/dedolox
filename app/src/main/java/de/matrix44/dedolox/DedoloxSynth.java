@@ -27,7 +27,7 @@ public class DedoloxSynth {
 
     // Create note number to frequency conversion table:
     for (int i = 0; i < 127; i++)
-      noteToFrequency[i] = 440.0 * Math.pow(2.0, ((double)(i - 69)) / 12.0);
+      noteToFrequency[i] = 440.0f * (float)Math.pow(2.0f, ((float)(i - 69)) / 12.0f);
   }
 
   /**
@@ -56,12 +56,17 @@ public class DedoloxSynth {
 
     // Update sample rate dependent synth elements:
     ampEnvelope.setSampleRate(sampleRate);
-    masterVolume.setSampleRate(sampleRate);
     lfo1.setSampleRate(sampleRate);
     lfo2.setSampleRate(sampleRate);
+    masterVolume.setSampleRate(sampleRate);
+    osc1Volume.setSampleRate(sampleRate);
+    osc2Volume.setSampleRate(sampleRate);
+    noiseVolume.setSampleRate(sampleRate);
+    mixerDrive.setSampleRate(sampleRate);
     filter.setSampleRate(sampleRate);
     oscillator1.setSampleRate(sampleRate);
     oscillator2.setSampleRate(sampleRate);
+    delay.setSampleRate(sampleRate);
   }
 
   /**
@@ -143,12 +148,12 @@ public class DedoloxSynth {
    * @param events       Incoming MIDI events.
    * @param eventCount   Number of valid entries in the events array.
    */
-  public void process(double[] left, double[] right, int sampleFrames, MIDIEvent[] events, int eventCount) {
+  public void process(float[] left, float[] right, int sampleFrames, MIDIEvent[] events, int eventCount) {
 
     // Currently muted?
     if (muted) {
       for (int i = 0; i < sampleFrames; i++)
-        left[i] = right[i] = 0.0;
+        left[i] = right[i] = 0.0f;
       return;
     }
 
@@ -160,13 +165,13 @@ public class DedoloxSynth {
       note1 = 1;
     else if (note1 > 127)
       note1 = 126;
-    double freq1 = noteToFrequency[note1];
+    float freq1 = noteToFrequency[note1];
     if (osc1fine < -0.01) {
-      double d = freq1 - noteToFrequency[note1 - 1];
+      float d = freq1 - noteToFrequency[note1 - 1];
       freq1 += d * osc1fine;
     }
     else if (osc1fine > 0.01) {
-      double d = noteToFrequency[note1 + 1] - freq1;
+      float d = noteToFrequency[note1 + 1] - freq1;
       freq1 += d * osc1fine;
     }
 
@@ -176,13 +181,13 @@ public class DedoloxSynth {
       note2 = 0;
     else if (note2 > 127)
       note2 = 127;
-    double freq2 = noteToFrequency[note2];
+    float freq2 = noteToFrequency[note2];
     if (osc2fine < -0.01) {
-      double d = freq2 - noteToFrequency[note2 - 1];
+      float d = freq2 - noteToFrequency[note2 - 1];
       freq2 += d * osc2fine;
     }
     else if (osc2fine > 0.01) {
-      double d = noteToFrequency[note2 + 1] - freq2;
+      float d = noteToFrequency[note2 + 1] - freq2;
       freq2 += d * osc2fine;
     }
 
@@ -192,32 +197,35 @@ public class DedoloxSynth {
     for (int i = 0; i < sampleFrames; i++) {
 
       // Get envelope and LFO values:
-      double ampEnvelopeValue = ampEnvelope.tick();
-      double lfo1Value = lfo1.tick();
-      double lfo2Value = lfo2.tick();
+      float ampEnvelopeValue = ampEnvelope.tick();
+      float lfo1Value = lfo1.tick();
+      float lfo2Value = lfo2.tick();
 
-      double envVal = ampEnvelopeValue * currentVelocity;
+      float envVal = ampEnvelopeValue * currentVelocity;
 
       //envVal *= (lfo1Buffer[i] + 1.0) * 0.5;
 
       // Evaluate oscillators:
-      double osc1Val  = oscillator1.tick();
-      double osc2Val  = oscillator2.tick();
-      double noiseVal = 2.0 * Math.random() - 1.0;
-      double ringVal  = osc1Val * osc2Val * 2.0;
+      float osc1Val  = oscillator1.tick();
+      float osc2Val  = oscillator2.tick();
+      float noiseVal = 2.0f * (float)Math.random() - 1.0f;
+      float ringVal  = osc1Val * osc2Val * 2.0f;
 
       // Clip ring modulated values:
-      ringVal = ringVal - (ringVal * ringVal * ringVal) / 6.0;
+      ringVal = ringVal - (ringVal * ringVal * ringVal) / 6.0f;
 
       // Mix oscillators:
-      double oscVal = (osc1Val * osc1Volume.tick()) + (ringVal  * ringmodVolume.tick()) +
-                      (osc2Val * osc2Volume.tick()) + (noiseVal * noiseVolume.tick());
+      float oscVal = (osc1Val * osc1Volume.tick()) + (ringVal  * mixerDrive.tick()) +
+                     (osc2Val * osc2Volume.tick()) + (noiseVal * noiseVolume.tick());
 
       // Apply amp envelope:
       oscVal *= envVal;
 
       // Apply filter:
       oscVal = filter.tick(oscVal);
+
+      // Apply delay:
+      oscVal = delay.tick(oscVal);
 
       // Apply master volume:
       oscVal *= masterVolume.tick();
@@ -262,7 +270,7 @@ public class DedoloxSynth {
 
         // Save note values:
         currentNote     = events[i].value1;
-        currentVelocity = (double)events[i].value2 / 127.0;
+        currentVelocity = (float)events[i].value2 / 127.0f;
 
         // Start envelope:
         ampEnvelope.setGateOn();
@@ -279,7 +287,7 @@ public class DedoloxSynth {
           continue;
 
         // Scale value to range [0, 1]:
-        double nrmVal = (double)events[i].value2 / 127.0;
+        float nrmVal = (float)events[i].value2 / 127.0f;
 
         // Check CC numbers:
         switch (events[i].value1) {
@@ -374,11 +382,11 @@ public class DedoloxSynth {
             break;
 
           case MIDIImplementation.CC_OSC1_FINE:
-            osc1fine = (double)(events[i].value2 - 64) / 64.0;
+            osc1fine = (float)(events[i].value2 - 64) / 64.0f;
             break;
 
           case MIDIImplementation.CC_OSC1_PULSE:
-            oscillator1.setPulseWidth(Tweak.OSC_MIN_PW + ((1.0 - Tweak.OSC_MIN_PW) * nrmVal));
+            oscillator1.setPulseWidth(Tweak.OSC_MIN_PW + ((1.0f - Tweak.OSC_MIN_PW) * nrmVal));
             break;
 
           case MIDIImplementation.CC_OSC1_LEVEL:
@@ -401,7 +409,7 @@ public class DedoloxSynth {
             break;
 
           case MIDIImplementation.CC_OSC2_FINE:
-            osc2fine = (double)(events[i].value2 - 64) / 64.0;
+            osc2fine = (float)(events[i].value2 - 64) / 64.0f;
             break;
 
           case MIDIImplementation.CC_OSC2_PULSE:
@@ -416,8 +424,24 @@ public class DedoloxSynth {
             noiseVolume.setValue(nrmVal);
             break;
 
-          case MIDIImplementation.CC_RINGMOD_LEVEL:
-            ringmodVolume.setValue(nrmVal);
+          case MIDIImplementation.CC_MIXER_DRIVE:
+            mixerDrive.setValue(nrmVal);
+            break;
+
+          case MIDIImplementation.CC_DELAY_ENABLE:
+            delay.setEnabled(events[i].value2 != 0);
+            break;
+
+          case MIDIImplementation.CC_DELAY_TIME:
+            delay.setTime(Tweak.DELAY_MIN_TIME + ((Tweak.DELAY_MAX_TIME - Tweak.DELAY_MIN_TIME) * nrmVal));
+            break;
+
+          case MIDIImplementation.CC_DELAY_FEEDBACK:
+            delay.setFeedback(Tweak.DELAY_MAX_FEEDBACK * nrmVal);
+            break;
+
+          case MIDIImplementation.CC_DELAY_MIX:
+            delay.setMix(nrmVal);
             break;
 
           default:
@@ -428,7 +452,7 @@ public class DedoloxSynth {
   }
 
   /** Lookup table for MIDI note numbers. */
-  private final double[] noteToFrequency = new double[127];
+  private final float[] noteToFrequency = new float[127];
 
   /** Current sample rate for this synth in samples/second. */
   private int sampleRate = 44100;
@@ -440,7 +464,7 @@ public class DedoloxSynth {
   private int currentNote = 64;
 
   /** Velocity value [0-1] of the current note. */
-  private double currentVelocity = 1.0;
+  private float currentVelocity = 1.0f;
 
   /** The amplifier envelope. */
   private final AHDSREnvelope ampEnvelope = new AHDSREnvelope();
@@ -452,19 +476,19 @@ public class DedoloxSynth {
   private final LFO lfo2 = new LFO();
 
   /** Master volume of this synth. */
-  private final SmoothParameter masterVolume = new SmoothParameter(0.75);
+  private final SmoothParameter masterVolume = new SmoothParameter(0.75f);
 
   /** Mixer, oscillator 1 volume. */
-  private final SmoothParameter osc1Volume = new SmoothParameter(1.0);
+  private final SmoothParameter osc1Volume = new SmoothParameter(1.0f);
 
   /** Mixer, oscillator 2 volume. */
-  private final SmoothParameter osc2Volume = new SmoothParameter(1.0);
+  private final SmoothParameter osc2Volume = new SmoothParameter(1.0f);
 
   /** Mixer, noise oscillator volume. */
-  private final SmoothParameter noiseVolume = new SmoothParameter(0.0);
+  private final SmoothParameter noiseVolume = new SmoothParameter(0.0f);
 
-  /** Mixer, ring modulated volume. */
-  private final SmoothParameter ringmodVolume = new SmoothParameter(0.0);
+  /** Mixer drive. */
+  private final SmoothParameter mixerDrive = new SmoothParameter(0.0f);
 
   /** The filter used in this synth. */
   private final ResonantFilter filter = new ResonantFilter();
@@ -476,13 +500,13 @@ public class DedoloxSynth {
   private int osc1coarse = 0;
 
   /** Oscillator 1 fine tuning (+-1 semitone). */
-  private double osc1fine = 0.0;
+  private float osc1fine = 0.0f;
 
   /** Oscillator 2 coarse tuning (+-12 semitones). */
   private int osc2coarse = 0;
 
   /** Oscillator 2 fine tuning (+-1 semitone). */
-  private double osc2fine = 0.0;
+  private float osc2fine = 0.0f;
 
   /** Second main oscillator. */
   private final MainOscillator oscillator2 = new MainOscillator();
@@ -492,4 +516,7 @@ public class DedoloxSynth {
 
   /** Is the synth currently muted? */
   private boolean muted = false;
+
+  /** The delay effect. */
+  private final Delay delay = new Delay();
 }

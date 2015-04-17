@@ -57,7 +57,7 @@ public class MainOscillator {
    *
    * @return Returns the current frequency in hertz.
    */
-  public double getFrequency() {
+  public float getFrequency() {
 
     // Return current frequency:
     return frequency.getValue();
@@ -68,7 +68,7 @@ public class MainOscillator {
    *
    * @param newFrequency The new frequency of this oscillator.
    */
-  public void setFrequency(double newFrequency) {
+  public void setFrequency(float newFrequency) {
 
     // Check frequency:
     if (newFrequency < Tweak.OSC_MIN_SPEED)
@@ -107,7 +107,7 @@ public class MainOscillator {
    *
    * @return Returns the pulse width in percent.
    */
-  public double getPulseWidth() {
+  public float getPulseWidth() {
 
     // Return current pulse width:
     return pulseWidth.getValue();
@@ -118,13 +118,13 @@ public class MainOscillator {
    *
    * @param newWidth The new pulse width of this oscillator.
    */
-  public void setPulseWidth(double newWidth) {
+  public void setPulseWidth(float newWidth) {
 
     // Clip value:
-    if (newWidth < 0.0)
-      newWidth = 0.0;
-    else if (newWidth > 1.0)
-      newWidth = 1.0;
+    if (newWidth < 0.0f)
+      newWidth = 0.0f;
+    else if (newWidth > 1.0f)
+      newWidth = 1.0f;
 
     // Update width:
     pulseWidth.setValue(newWidth);
@@ -135,38 +135,38 @@ public class MainOscillator {
    *
    * @return The next sample of this oscillator.
    */
-  public double tick() {
+  public float tick() {
 
-    double output;
-    double t = omega / tau;
-    double inc = tau * frequency.tick() / sampleRate;
-    double pw = pulseWidth.tick();
+    float output;
+    float t = omega / tau;
+    float inc = tau * frequency.tick() / sampleRate;
+    float pw = pulseWidth.tick();
 
     if (waveForm == WaveForm.SINE)
-      output = Math.sin(omega);
+      output = (float)Math.sin(omega);
 
     else if (waveForm == WaveForm.SAW)
     {
-      output = (omega / pi) - 1.0;
+      output = (omega / pi) - 1.0f;
       output -= poly_blep(t, inc);
     }
 
     else if (waveForm == WaveForm.RANDOM)
-      output = 2.0 * Math.random() - 1.0;
+      output = 2.0f * (float)Math.random() - 1.0f;
 
     else
     {
       if (omega <= (pi * pw))
-        output = 1.0;
+        output = 1.0f;
       else
-        output = -1.0;
+        output = -1.0f;
       output += poly_blep(t, inc);
-      output -= poly_blep((t + (0.5 * pw)) % 1.0, inc);
+      output -= poly_blep((t + (0.5f * pw)) % 1.0f, inc);
 
       if (waveForm == WaveForm.TRIANGLE)
       {
         // Leaky integrator: y[n] = A * x[n] + (1 - A) * y[n-1]
-        output = inc * output + (1.0 - inc) * lastOutput;
+        output = inc * output + (1.0f - inc) * lastOutput;
       }
     }
 
@@ -185,7 +185,7 @@ public class MainOscillator {
    * @param dt Current phase increment.
    * @return The BLEP to add to the signal.
    */
-  private double poly_blep(double t, double dt) {
+  private float poly_blep(float t, float dt) {
 
     dt /= tau;
 
@@ -193,31 +193,31 @@ public class MainOscillator {
     if (t < dt)
     {
       t /= dt;
-      return t + t - t * t - 1.0;
+      return t + t - t * t - 1.0f;
     }
 
     // Case -1.0 < t < 0.0
-    else if (t > 1.0 - dt)
+    else if (t > 1.0f - dt)
     {
-      t = (t - 1.0) / dt;
-      return t * t + t + t + 1.0;
+      t = (t - 1.0f) / dt;
+      return t * t + t + t + 1.0f;
     }
 
     // Not on the edge, return 0:
-    return 0.0;
+    return 0.0f;
   }
 
   /** One little pi. */
-  private static final double pi = Math.PI;
+  private static final float pi = (float)Math.PI;
 
   /** Well, two pies... */
-  private static final double tau = Math.PI * 2.0;
+  private static final float tau = (float)Math.PI * 2.0f;
 
   /** The sample rate of the system (in samples / second). */
   private int sampleRate;
 
   /** Current oscillator phase. */
-  private double omega = 0.0;
+  private float omega = 0.0f;
 
   /** Waveform of this oscillator. */
   private WaveForm waveForm = WaveForm.SINE;
@@ -226,8 +226,8 @@ public class MainOscillator {
   private final SmoothParameter frequency = new SmoothParameter(Tweak.LFO_MIN_SPEED);
 
   /** Pulse width of this oscillator. */
-  private final SmoothParameter pulseWidth = new SmoothParameter(1.0);
+  private final SmoothParameter pulseWidth = new SmoothParameter(1.0f);
 
   /** The last oscillator output: */
-  private double lastOutput = 0.0;
+  private float lastOutput = 0.0f;
 }

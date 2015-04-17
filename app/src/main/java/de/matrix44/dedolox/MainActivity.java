@@ -183,7 +183,6 @@ public class MainActivity extends ActionBarActivity {
     ((SynthPanel)findViewById(R.id.filterenvpanel)).setScrollView(scrollView);
     ((SynthPanel)findViewById(R.id.lfo1panel)).setScrollView(scrollView);
     ((SynthPanel)findViewById(R.id.lfo2panel)).setScrollView(scrollView);
-    ((SynthPanel)findViewById(R.id.distortionpanel)).setScrollView(scrollView);
     ((SynthPanel)findViewById(R.id.phaserpanel)).setScrollView(scrollView);
     ((SynthPanel)findViewById(R.id.delaypanel)).setScrollView(scrollView);
     ((SynthPanel)findViewById(R.id.masterpanel)).setScrollView(scrollView);
@@ -222,7 +221,6 @@ public class MainActivity extends ActionBarActivity {
     ((SynthPanel)findViewById(R.id.filterenvpanel)).setPreset(preset);
     ((SynthPanel)findViewById(R.id.lfo1panel)).setPreset(preset);
     ((SynthPanel)findViewById(R.id.lfo2panel)).setPreset(preset);
-    ((SynthPanel)findViewById(R.id.distortionpanel)).setPreset(preset);
     ((SynthPanel)findViewById(R.id.phaserpanel)).setPreset(preset);
     ((SynthPanel)findViewById(R.id.delaypanel)).setPreset(preset);
     ((SynthPanel)findViewById(R.id.masterpanel)).setPreset(preset);

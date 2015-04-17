@@ -50,7 +50,7 @@ public class SynthPanel extends FrameLayout {
     int width = MeasureSpec.getSize(widthMeasureSpec);
 
     if (backPic != null) {
-      double aspect = (double)backPic.getWidth() / backPic.getHeight();
+      float aspect = (float)backPic.getWidth() / backPic.getHeight();
       width = (int)(aspect * height);
       widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
       super.onMeasure(widthMeasureSpec, heightMeasureSpec);

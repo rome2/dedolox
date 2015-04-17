@@ -41,19 +41,19 @@ public class Osc1Panel extends  SynthPanel {
 
     if (event.value1 == MIDIImplementation.CC_OSC1_COARSE) {
       coarsePot.blockUpdates(false);
-      coarsePot.setValue((((event.value2 - 64) / 12.0) + 1.0) * 0.5);
+      coarsePot.setValue((((event.value2 - 64) / 12.0f) + 1.0f) * 0.5f);
       coarsePot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_OSC1_FINE) {
       finePot.blockUpdates(false);
-      finePot.setValue(event.value2 / 127.0);
+      finePot.setValue(event.value2 / 127.0f);
       finePot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_OSC1_PULSE) {
       pulsePot.blockUpdates(false);
-      pulsePot.setValue(event.value2 / 127.0);
+      pulsePot.setValue(event.value2 / 127.0f);
       pulsePot.blockUpdates(true);
     }
   }
@@ -80,9 +80,9 @@ public class Osc1Panel extends  SynthPanel {
     coarsePot.setControlSteps(25);
     coarsePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        newVal = (newVal * 2.0) - 1.0;
-        int iVal = 64 + (int)Math.floor(newVal * 12.0);
+      public void onValueChanged(float newVal) {
+        newVal = (newVal * 2.0f) - 1.0f;
+        int iVal = 64 + (int)Math.floor(newVal * 12.0f);
         MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_COARSE, iVal);
       }
     });
@@ -91,8 +91,8 @@ public class Osc1Panel extends  SynthPanel {
     finePot = new PotView(context);
     finePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_FINE, (int)(127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_FINE, (int)(127.0f * newVal));
       }
     });
     addView(finePot, new FrameLayout.LayoutParams(100, 100));
@@ -100,8 +100,8 @@ public class Osc1Panel extends  SynthPanel {
     pulsePot = new PotView(context);
     pulsePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueChanged(double newVal) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_PULSE, (int)(127.0 * newVal));
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_OSC1_PULSE, (int)(127.0f * newVal));
       }
     });
     addView(pulsePot, new FrameLayout.LayoutParams(100, 100));
@@ -115,37 +115,37 @@ public class Osc1Panel extends  SynthPanel {
 
     if (waveSel != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)waveSel.getLayoutParams();
-      params.width      = (int)(0.421875 * width);
-      params.height     = (int)(0.421875 * height);
-      params.leftMargin = (int)(0.060546875 * width);
-      params.topMargin  = (int)(0.069335938 * height);
+      params.width      = (int)(0.421875f * width);
+      params.height     = (int)(0.421875f * height);
+      params.leftMargin = (int)(0.060546875f * width);
+      params.topMargin  = (int)(0.069335938f * height);
       waveSel.setLayoutParams(params);
     }
 
     if (coarsePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)coarsePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.110351563 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.110351563f * height);
       coarsePot.setLayoutParams(params);
     }
 
     if (finePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)finePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.5546875 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.5546875f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       finePot.setLayoutParams(params);
     }
 
     if (pulsePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)pulsePot.getLayoutParams();
-      params.width      = (int)(0.336914063 * width);
-      params.height     = (int)(0.336914063 * height);
-      params.leftMargin = (int)(0.109375 * width);
-      params.topMargin  = (int)(0.5546875 * height);
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
       pulsePot.setLayoutParams(params);
     }
 
