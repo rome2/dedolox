@@ -58,10 +58,6 @@ public class ResonantFilter {
     // Parameter check:
     if (newSampleRate > 0)
       sampleRate = newSampleRate;
-
-    // Update parameters:
-    cutoff.setSampleRate(newSampleRate);
-    resonance.setSampleRate(newSampleRate);
   }
 
   /**
@@ -97,38 +93,6 @@ public class ResonantFilter {
   }
 
   /**
-   * Retrieve the sploe of the filter.
-   *
-   * @return The current filter slope.
-   */
-  public Slope getSlope() {
-
-    // Return current slope:
-    return slope;
-  }
-
-  /**
-   * Set the slope of the filter.
-   *
-   * @param newSlope The new slope of the filter.
-   */
-  public void setSlope(Slope newSlope) {
-
-    // Anything to do?
-    if (slope == newSlope)
-      return;
-
-    // Update slope:
-    slope = newSlope;
-
-    // Clear filter:
-    buffer[0] = 0.0f;
-    buffer[1] = 0.0f;
-    buffer[2] = 0.0f;
-    buffer[3] = 0.0f;
-  }
-
-  /**
    * Retrieve the cutoff of this filter.
    *
    * @return Returns the current cutoff.
@@ -136,7 +100,7 @@ public class ResonantFilter {
   public float getCutoff() {
 
     // Return current cutoff:
-    return cutoff.getValue();
+    return cutoff;
   }
 
   /**
@@ -146,14 +110,13 @@ public class ResonantFilter {
    */
   public void setCutoff(float newFrequency) {
 
-    // Check cutoff:
+    // Set clipped value:
     if (newFrequency < Tweak.FILTER_MIN_CUTOFF)
-      newFrequency = Tweak.FILTER_MIN_CUTOFF;
+      cutoff = Tweak.FILTER_MIN_CUTOFF;
     else if (newFrequency > Tweak.FILTER_MAX_CUTOFF)
-      newFrequency = Tweak.FILTER_MAX_CUTOFF;
-
-    // Update cutoff:
-    cutoff.setValue(newFrequency);
+      cutoff = Tweak.FILTER_MAX_CUTOFF;
+    else
+      cutoff = newFrequency;
   }
 
   /**
@@ -164,7 +127,7 @@ public class ResonantFilter {
   public float getResonance() {
 
     // Return current resonance:
-    return resonance.getValue();
+    return resonance;
   }
 
   /**
@@ -174,26 +137,30 @@ public class ResonantFilter {
    */
   public void setResonance(float newResonance) {
 
-    // Check resonance:
+    // Set clipped value:
     if (newResonance < 0.0f)
-      newResonance = 0.0f;
+      resonance = 0.0f;
     else if (newResonance > Tweak.FILTER_MAX_RESONANCE)
-      newResonance = Tweak.FILTER_MAX_RESONANCE;
-
-    // Update resonance:
-    resonance.setValue(newResonance);
+      resonance = Tweak.FILTER_MAX_RESONANCE;
+    else
+      resonance = newResonance;
   }
 
   /**
    * This is the main filter function.
    *
    * @param input The input value.
+   * @param cutoffMod Cutoff modulation offset.
    * @return Returns the filtered value.
    */
-  public float tick(float input) {
+  public float tick(float input, float cutoffMod) {
 
-    float f = cutoff.tick();
-    float fb = resonance.tick() * (1.0f - 0.15f * f * f) * 4.0f;
+    float f = cutoff - cutoffMod;
+    if (f < Tweak.FILTER_MIN_CUTOFF)
+      f = Tweak.FILTER_MIN_CUTOFF;
+    else if (f > Tweak.FILTER_MAX_CUTOFF)
+      f = Tweak.FILTER_MAX_CUTOFF;
+    float fb = resonance * (1.0f - 0.15f * f * f) * 4.0f;
 
     float x = input - buffer[4] * fb;
     x *= 0.35013f * (f * f) * (f * f);
@@ -266,17 +233,14 @@ public class ResonantFilter {
   /** Filter mode. */
   private Mode mode = Mode.LOWPASS;
 
-  /** Filter slope. */
-  private Slope slope = Slope.DB24;
-
   /** The sample rate of the system (in samples / second). */
   private int sampleRate;
 
   /** Frequency of this filter. */
-  private final SmoothParameter cutoff = new SmoothParameter(Tweak.FILTER_MAX_CUTOFF);
+  private float cutoff = Tweak.FILTER_MAX_CUTOFF;
 
   /** Resonance of this filter. */
-  private final SmoothParameter resonance = new SmoothParameter(0.0f);
+  private float resonance = 0.0f;
 
   /** Temporary buffer for filtered values. */
   private final float[] buffer = new float[5];

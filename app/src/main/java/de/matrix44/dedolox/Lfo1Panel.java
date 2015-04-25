@@ -127,22 +127,22 @@ public class Lfo1Panel extends  SynthPanel {
       ratePot.setLayoutParams(params);
     }
 
-    if (pitchPot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) pitchPot.getLayoutParams();
-      params.width      = (int)(0.336914063f * width);
-      params.height     = (int)(0.336914063f * height);
-      params.leftMargin = (int)(0.5546875f * width);
-      params.topMargin  = (int)(0.5546875f * height);
-      pitchPot.setLayoutParams(params);
-    }
-
     if (volumePot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) volumePot.getLayoutParams();
       params.width      = (int)(0.336914063f * width);
       params.height     = (int)(0.336914063f * height);
-      params.leftMargin = (int)(0.109375f * width);
+      params.leftMargin = (int)(0.5546875f * width);
       params.topMargin  = (int)(0.5546875f * height);
       volumePot.setLayoutParams(params);
+    }
+
+    if (pitchPot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) pitchPot.getLayoutParams();
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
+      pitchPot.setLayoutParams(params);
     }
 
     super.onLayout(changed, left, top, right, bottom);

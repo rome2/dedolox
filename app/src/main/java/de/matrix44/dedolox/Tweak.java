@@ -52,6 +52,27 @@ public class Tweak {
   /** Min pulse width: */
   public static final float OSC_MIN_PW = 0.1f;
 
+  /** Phaser stages. */
+  public static final int PHASER_STAGES = 6;
+
+  /** Min phaser frequency. */
+  public static final float PHASER_MIN_FREQ = 440.0f;
+
+  /** Max phaser frequency. */
+  public static final float PHASER_MAX_FREQ = 1720.0f;
+
+  /** Min phaser rate. */
+  public static final float PHASER_MIN_RATE = 0.25f;
+
+  /** Max phaser feedback. */
+  public static final float PHASER_MAX_FEEDBACK = 0.5f;
+
+  /** Max phaser depth. */
+  public static final float PHASER_MAX_DEPTH = 0.5f;
+
+  /** Max phaser rate. */
+  public static final float PHASER_MAX_RATE = 3.0f;
+
   /** Min delay time. */
   public static final float DELAY_MIN_TIME = 0.075f;
 
@@ -60,4 +81,7 @@ public class Tweak {
 
   /** Max delay feedback. */
   public static final float DELAY_MAX_FEEDBACK = 0.75f;
+
+  /** Max portamento time. */
+  public static final float PORTAMENTO_MAX_TIME = 1.0f;
 }

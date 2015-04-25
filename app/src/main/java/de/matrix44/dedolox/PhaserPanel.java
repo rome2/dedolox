@@ -127,22 +127,22 @@ public class PhaserPanel extends  SynthPanel {
       ratePot.setLayoutParams(params);
     }
 
-    if (depthPot != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) depthPot.getLayoutParams();
-      params.width      = (int)(0.336914063f * width);
-      params.height     = (int)(0.336914063f * height);
-      params.leftMargin = (int)(0.5546875f * width);
-      params.topMargin  = (int)(0.5546875f * height);
-      depthPot.setLayoutParams(params);
-    }
-
     if (feedbackPot != null) {
       FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) feedbackPot.getLayoutParams();
       params.width      = (int)(0.336914063f * width);
       params.height     = (int)(0.336914063f * height);
-      params.leftMargin = (int)(0.109375f * width);
+      params.leftMargin = (int)(0.5546875f * width);
       params.topMargin  = (int)(0.5546875f * height);
       feedbackPot.setLayoutParams(params);
+    }
+
+    if (depthPot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) depthPot.getLayoutParams();
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
+      depthPot.setLayoutParams(params);
     }
 
     super.onLayout(changed, left, top, right, bottom);

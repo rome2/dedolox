@@ -42,12 +42,8 @@ public final class MIDIImplementation {
   /** Filter resonance. */
   public static final int CC_FILTER_RESONANCE = 9;
 
-  /** Filter slope.
-   *
-   * 0: 12 dB.
-   * 1: 24 db.
-   * */
-  public static final int CC_FILTER_SLOPE = 14;
+  /** Filter envelope sensitivity. */
+  public static final int CC_FILTER_ENV = 14;
 
   /** Sustain level of the filter envelope. */
   public static final int CC_FILTERENV_SUSTAIN = 15;

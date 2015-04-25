@@ -24,7 +24,7 @@ public class FilterPanel extends  SynthPanel {
 
     modeSel.setScrollView(target);
     cutoffPot.setScrollView(target);
-    slopeSel.setScrollView(target);
+    envelopePot.setScrollView(target);
     resonancePot.setScrollView(target);
   }
 
@@ -45,10 +45,10 @@ public class FilterPanel extends  SynthPanel {
       cutoffPot.blockUpdates(true);
     }
 
-    if (event.value1 == MIDIImplementation.CC_FILTER_SLOPE) {
-      slopeSel.blockUpdates(false);
-      slopeSel.setValue(event.value2);
-      slopeSel.blockUpdates(true);
+    if (event.value1 == MIDIImplementation.CC_FILTER_ENV) {
+      envelopePot.blockUpdates(false);
+      envelopePot.setValue(event.value2 / 127.0f);
+      envelopePot.blockUpdates(true);
     }
 
     if (event.value1 == MIDIImplementation.CC_FILTER_RESONANCE) {
@@ -61,7 +61,7 @@ public class FilterPanel extends  SynthPanel {
   public void setPreset(DedoloxPreset preset) {
     midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_MODE));
     midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_CUTOFF));
-    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_SLOPE));
+    midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_ENV));
     midiIn(preset.getValueEvent(MIDIImplementation.CC_FILTER_RESONANCE));
   }
 
@@ -85,14 +85,14 @@ public class FilterPanel extends  SynthPanel {
     });
     addView(cutoffPot, new FrameLayout.LayoutParams(100, 100));
 
-    slopeSel = new MultiSelView(context, 2);
-    modeSel.setWaveSelectionListener(new MultiSelView.ValueSelectionListener() {
+    envelopePot = new PotView(context);
+    envelopePot.setPotListener(new PotView.PotListener() {
       @Override
-      public void onValueSelectionChanged(int newSlope) {
-        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_SLOPE, newSlope);
+      public void onValueChanged(float newVal) {
+        MainAudioThread.getAudioThread().controlChange(0, MIDIImplementation.CC_FILTER_ENV, (int)(127.0f * newVal));
       }
     });
-    addView(slopeSel, new FrameLayout.LayoutParams(100, 100));
+    addView(envelopePot, new FrameLayout.LayoutParams(100, 100));
 
     resonancePot = new PotView(context);
     resonancePot.setPotListener(new PotView.PotListener() {
@@ -128,13 +128,13 @@ public class FilterPanel extends  SynthPanel {
       cutoffPot.setLayoutParams(params);
     }
 
-    if (slopeSel != null) {
-      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)slopeSel.getLayoutParams();
-      params.width      = (int)(0.421875f * width);
-      params.height     = (int)(0.421875f * height);
-      params.leftMargin = (int)(0.060546875f * width);
-      params.topMargin  = (int)(0.5096875f * height);
-      slopeSel.setLayoutParams(params);
+    if (envelopePot != null) {
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)envelopePot.getLayoutParams();
+      params.width      = (int)(0.336914063f * width);
+      params.height     = (int)(0.336914063f * height);
+      params.leftMargin = (int)(0.109375f * width);
+      params.topMargin  = (int)(0.5546875f * height);
+      envelopePot.setLayoutParams(params);
     }
 
     if (resonancePot != null) {
@@ -151,6 +151,6 @@ public class FilterPanel extends  SynthPanel {
 
   private MultiSelView modeSel = null;
   private PotView cutoffPot = null;
-  private MultiSelView slopeSel = null;
+  private PotView envelopePot = null;
   private PotView resonancePot = null;
 }

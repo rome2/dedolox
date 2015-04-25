@@ -46,10 +46,6 @@ public class MainOscillator {
     // Parameter check:
     if (newSampleRate > 0)
       sampleRate = newSampleRate;
-
-    // Update parameters:
-    frequency.setSampleRate(newSampleRate);
-    pulseWidth.setSampleRate(newSampleRate);
   }
 
   /**
@@ -60,7 +56,7 @@ public class MainOscillator {
   public float getFrequency() {
 
     // Return current frequency:
-    return frequency.getValue();
+    return frequency;
   }
 
   /**
@@ -70,14 +66,13 @@ public class MainOscillator {
    */
   public void setFrequency(float newFrequency) {
 
-    // Check frequency:
+    // Set clipped value:
     if (newFrequency < Tweak.OSC_MIN_SPEED)
-      newFrequency = Tweak.OSC_MIN_SPEED;
+      frequency = Tweak.OSC_MIN_SPEED;
     else if (newFrequency > Tweak.OSC_MAX_SPEED)
-      newFrequency = Tweak.OSC_MAX_SPEED;
-
-    // Update frequency:
-    frequency.setValue(newFrequency);
+      frequency = Tweak.OSC_MAX_SPEED;
+    else
+      frequency = newFrequency;
   }
 
   /**
@@ -110,7 +105,7 @@ public class MainOscillator {
   public float getPulseWidth() {
 
     // Return current pulse width:
-    return pulseWidth.getValue();
+    return pulseWidth;
   }
 
   /**
@@ -120,33 +115,36 @@ public class MainOscillator {
    */
   public void setPulseWidth(float newWidth) {
 
-    // Clip value:
-    if (newWidth < 0.0f)
-      newWidth = 0.0f;
+    // Set clipped value:
+    if (newWidth < Tweak.OSC_MIN_PW)
+      pulseWidth = Tweak.OSC_MIN_PW;
     else if (newWidth > 1.0f)
-      newWidth = 1.0f;
-
-    // Update width:
-    pulseWidth.setValue(newWidth);
+      pulseWidth = 1.0f;
+    else
+      pulseWidth = newWidth;
   }
 
   /**
    * The actual oscillation function.
    *
+   * @param pulseMod current pulse modulation value (0..1).
+   *
    * @return The next sample of this oscillator.
    */
-  public float tick() {
+  public float tick(float pulseMod) {
 
     float output;
     float t = omega / tau;
-    float inc = tau * frequency.tick() / sampleRate;
-    float pw = pulseWidth.tick();
+    float inc = tau * frequency / sampleRate;
+
+    float pw = pulseWidth - pulseMod;
+    if (pw < Tweak.OSC_MIN_PW)
+      pw = Tweak.OSC_MIN_PW;
 
     if (waveForm == WaveForm.SINE)
       output = (float)Math.sin(omega);
 
-    else if (waveForm == WaveForm.SAW)
-    {
+    else if (waveForm == WaveForm.SAW) {
       output = (omega / pi) - 1.0f;
       output -= poly_blep(t, inc);
     }
@@ -154,8 +152,7 @@ public class MainOscillator {
     else if (waveForm == WaveForm.RANDOM)
       output = 2.0f * (float)Math.random() - 1.0f;
 
-    else
-    {
+    else {
       if (omega <= (pi * pw))
         output = 1.0f;
       else
@@ -163,8 +160,7 @@ public class MainOscillator {
       output += poly_blep(t, inc);
       output -= poly_blep((t + (0.5f * pw)) % 1.0f, inc);
 
-      if (waveForm == WaveForm.TRIANGLE)
-      {
+      if (waveForm == WaveForm.TRIANGLE) {
         // Leaky integrator: y[n] = A * x[n] + (1 - A) * y[n-1]
         output = inc * output + (1.0f - inc) * lastOutput;
       }
@@ -190,15 +186,13 @@ public class MainOscillator {
     dt /= tau;
 
     // Case 0.0 <= t < 1.0
-    if (t < dt)
-    {
+    if (t < dt) {
       t /= dt;
       return t + t - t * t - 1.0f;
     }
 
     // Case -1.0 < t < 0.0
-    else if (t > 1.0f - dt)
-    {
+    else if (t > 1.0f - dt) {
       t = (t - 1.0f) / dt;
       return t * t + t + t + 1.0f;
     }
@@ -223,10 +217,10 @@ public class MainOscillator {
   private WaveForm waveForm = WaveForm.SINE;
 
   /** Frequency of this oscillator. */
-  private final SmoothParameter frequency = new SmoothParameter(Tweak.LFO_MIN_SPEED);
+  private float frequency = Tweak.OSC_MIN_SPEED;
 
   /** Pulse width of this oscillator. */
-  private final SmoothParameter pulseWidth = new SmoothParameter(1.0f);
+  private float pulseWidth = 1.0f;
 
   /** The last oscillator output: */
   private float lastOutput = 0.0f;
