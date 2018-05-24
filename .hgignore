@@ -10,3 +10,4 @@ app/build
 *.blend1
 blender/output/*
 research
+.directory
